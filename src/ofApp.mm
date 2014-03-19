@@ -2,7 +2,7 @@
 
 void ofApp::setup()
 {
-    ofxiOSSetOrientation(OF_ORIENTATION_90_LEFT);
+    ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     
     backgroundColorHue = ofRandom(0,255);
     ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
@@ -17,7 +17,7 @@ void ofApp::setup()
     ofEnableAlphaBlending();
     ofSetCircleResolution(24);
     
-    initialBufferSize = 512;
+    initialBufferSize = 1024;
 	sampleRate = 44100;
 	drawCounter = 0;
 	bufferCounter = 0;
@@ -55,7 +55,7 @@ void ofApp::setup()
     
     //    fullscreen = false;
     
-    controlPointSize = 11;
+    controlPointSize = 22;
     
     for (int i=0; i<16; i++) {
         randomY[i] = ofRandom(55,ofGetHeight()*2/5);
@@ -245,44 +245,31 @@ void ofApp::draw()
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
     
-    for (int i = 0; i<nElementLine; i++)
-    {
-        if (elementLinesDown[i].onOffTrigger)
-        {
-            if (!elementLinesDown[i].bOnOffBeingClick)
-            {
+    for (int i = 0; i<nElementLine; i++){
+        if (elementLinesDown[i].onOffTrigger){
+            if (!elementLinesDown[i].bOnOffBeingClick){
                 elementLinesDown[i].triggerColor = 100;
-            }
-            else
-            {
+            } else {
                 elementLinesDown[i].triggerColor = 0;
             }
-        }
-        else
-        {
+        } else {
             elementLinesDown[i].triggerColor = 0;
         }
         
         
-        if (elementLinesDown[i].soundTrigger&&tempoLineDown.bOnOffBeingClick)
-        {
+        if (elementLinesDown[i].soundTrigger&&tempoLineDown.bOnOffBeingClick){
             ofFill();
             ofSetColor(ofColor::fromHsb(0,0,230+elementLinesDown[i].triggerColor,155+elementLinesDown[i].triggerColor));
-            ofLine(elementLinesDown[i].onOffRect+ofVec2f(0,elementLinesDown[i].width), elementLinesDown[i].lengthRect+ofVec2f(0,-elementLinesDown[i].width));
-        }
-        else
-        {
+            ofLine(elementLinesDown[i].onOffRect+ofVec2f(0,elementLinesDown[i].width/2), elementLinesDown[i].lengthRect+ofVec2f(0,-elementLinesDown[i].width)/2);
+        } else {
             ofNoFill();
             ofSetColor(ofColor::fromHsb(0,0,230+elementLinesDown[i].triggerColor,50+elementLinesDown[i].triggerColor));
-            ofLine(elementLinesDown[i].onOffRect+ofVec2f(0,elementLinesDown[i].width), elementLinesDown[i].lengthRect+ofVec2f(0,-elementLinesDown[i].width));
+            ofLine(elementLinesDown[i].onOffRect+ofVec2f(0,elementLinesDown[i].width/2), elementLinesDown[i].lengthRect+ofVec2f(0,-elementLinesDown[i].width/2));
         }
         
-        if (!elementLinesDown[i].bOnOffBeingClick)
-        {
+        if (!elementLinesDown[i].bOnOffBeingClick) {
             ofNoFill();
-        }
-        else
-        {
+        } else {
             ofFill();
         }
         ofRect(elementLinesDown[i].onOffRect, controlPointSize, controlPointSize);
@@ -300,45 +287,32 @@ void ofApp::draw()
     
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
-    for (int i = 0; i<nElementLine; i++)
-    {
+    for (int i = 0; i<nElementLine; i++){
         
-        if (elementLinesUp[i].onOffTrigger)
-        {
-            if (!elementLinesUp[i].bOnOffBeingClick)
-            {
+        if (elementLinesUp[i].onOffTrigger){
+            if (!elementLinesUp[i].bOnOffBeingClick){
                 elementLinesUp[i].triggerColor = 100;
-            }
-            else
-            {
+            } else {
                 elementLinesUp[i].triggerColor = 0;
             }
-        }
-        else
-        {
+        } else {
             elementLinesUp[i].triggerColor = 0;
         }
         
         
-        if (elementLinesUp[i].soundTrigger&&tempoLineUp.bOnOffBeingClick)
-        {
+        if (elementLinesUp[i].soundTrigger&&tempoLineUp.bOnOffBeingClick){
             ofFill();
             ofSetColor(ofColor::fromHsb(0,0,230+elementLinesUp[i].triggerColor,155+elementLinesUp[i].triggerColor));
-            ofLine(elementLinesUp[i].onOffRect+ofVec2f(0,-elementLinesUp[i].width), elementLinesUp[i].lengthRect+ofVec2f(0,elementLinesUp[i].width));
-        }
-        else
-        {
+            ofLine(elementLinesUp[i].onOffRect+ofVec2f(0,-elementLinesUp[i].width/2), elementLinesUp[i].lengthRect+ofVec2f(0,elementLinesUp[i].width/2));
+        } else {
             ofNoFill();
             ofSetColor(ofColor::fromHsb(0,0,230+elementLinesUp[i].triggerColor,50+elementLinesUp[i].triggerColor));
-            ofLine(elementLinesUp[i].onOffRect+ofVec2f(0,-elementLinesUp[i].width), elementLinesUp[i].lengthRect+ofVec2f(0,elementLinesUp[i].width));
+            ofLine(elementLinesUp[i].onOffRect+ofVec2f(0,-elementLinesUp[i].width/2), elementLinesUp[i].lengthRect+ofVec2f(0,elementLinesUp[i].width/2));
         }
         
-        if (!elementLinesUp[i].bOnOffBeingClick)
-        {
+        if (!elementLinesUp[i].bOnOffBeingClick) {
             ofNoFill();
-        }
-        else
-        {
+        } else {
             ofFill();
         }
         ofRect(elementLinesUp[i].onOffRect, controlPointSize, controlPointSize);
@@ -371,8 +345,7 @@ void ofApp::draw()
     
     ofPushStyle();
     ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, 220, 100) );
-    if (tempoLineUp.bChangeSampleOver)
-    {
+//    if (tempoLineUp.bChangeSampleOver){
         ofPushStyle();
         if (tempoLineUp.bChangeSampleClick)
         {
@@ -390,15 +363,14 @@ void ofApp::draw()
         {
             ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, 220, 50) );
         }
-        ofRect(tempoLineUp.changeSamplePos.x-tempoLineUp.changeSampleSize/2, tempoLineUp.changeSamplePos.y-tempoLineUp.changeSampleSize/2, tempoLineUp.changeSampleSize, tempoLineUp.changeSampleSize);
-        ofNoFill();
-        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
-        ofLine(tempoLineUp.changeSamplePos.x+tempoLineUp.changeSampleSize/2,tempoLineUp.changeSamplePos.y+tempoLineUp.changeSampleSize/2,tempoLineUp.lengthRectPos.x+3,tempoLineUp.lengthRectPos.y+ofGetHeight()/2-7);
+//        ofRect(tempoLineUp.changeSamplePos.x-tempoLineUp.changeSampleSize/2, tempoLineUp.changeSamplePos.y-tempoLineUp.changeSampleSize/2, tempoLineUp.changeSampleSize, tempoLineUp.changeSampleSize);
+//        ofNoFill();
+//        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
+//        ofLine(tempoLineUp.changeSamplePos.x+tempoLineUp.changeSampleSize/2,tempoLineUp.changeSamplePos.y+tempoLineUp.changeSampleSize/2,tempoLineUp.lengthRectPos.x+3,tempoLineUp.lengthRectPos.y+ofGetHeight()/2-7);
         ofPopStyle();
         
-    }
-    if (tempoLineDown.bChangeSampleOver)
-    {
+//    }
+//    if (tempoLineDown.bChangeSampleOver){
         ofPushStyle();
         if (tempoLineDown.bChangeSampleClick)
         {
@@ -415,15 +387,18 @@ void ofApp::draw()
         {
             ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, 220, 50) );
         }
-        ofRect(tempoLineDown.changeSamplePos.x-30, tempoLineDown.changeSamplePos.y-30, 60, 60);
-        ofNoFill();
-        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
-        ofLine(tempoLineDown.changeSamplePos.x+30,tempoLineDown.changeSamplePos.y-30,tempoLineDown.lengthRectPos.x+3,tempoLineDown.lengthRectPos.y+ofGetHeight()/2+7);
+//        ofRect(tempoLineDown.changeSamplePos.x-30, tempoLineDown.changeSamplePos.y-30, 60, 60);
+//        ofNoFill();
+//        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
+//        ofLine(tempoLineDown.changeSamplePos.x+30,tempoLineDown.changeSamplePos.y-30,tempoLineDown.lengthRectPos.x+3,tempoLineDown.lengthRectPos.y+ofGetHeight()/2+7);
         ofPopStyle();
-    }
+//    }
     ofPopStyle();
     
     infomationWindow();
+ 
+    ofLine(mouseX, 0, mouseX, ofGetHeight());
+    ofLine(0, mouseY, ofGetWidth(), mouseY);
     
 }
 
@@ -742,16 +717,20 @@ void ofApp::touchMoved(ofTouchEventArgs & touch)
 
 
 void ofApp::touchUp(ofTouchEventArgs & touch){
-    //    tempoLineDown.bChangeSampleClick = onOffOut(x, y, tempoLineDown.changeSamplePos, 30, tempoLineDown.bChangeSampleClick);
-    //    tempoLineUp.bChangeSampleClick = onOffOut(x, y, tempoLineUp.changeSamplePos, 30, tempoLineUp.bChangeSampleClick);
-    //    if(inOutCal(touch.x, touch.y, tempoLineDown.changeSamplePos, 30)) tempoLineDown.bChangeSampleClick = false;
-    //    if(inOutCal(touch.x, touch.y, tempoLineUp.changeSamplePos, 30)) tempoLineUp.bChangeSampleClick = false;
-    
+//    tempoLineDown.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineDown.changeSamplePos, 30, tempoLineDown.bChangeSampleClick);
+//    tempoLineUp.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineUp.changeSamplePos, 30, tempoLineUp.bChangeSampleClick);
+//    if(inOutCal(touch.x, touch.y, tempoLineDown.changeSamplePos, 30)) tempoLineDown.bChangeSampleClick = false;
+//    if(inOutCal(touch.x, touch.y, tempoLineUp.changeSamplePos, 30)) tempoLineUp.bChangeSampleClick = false;
 }
 
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
-    //    tempoLineDown.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineDown.changeSamplePos, 30, tempoLineDown.bChangeSampleClick);
-    //    tempoLineUp.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineUp.changeSamplePos, 30, tempoLineUp.bChangeSampleClick);
+    tempoLineDown.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineDown.changeSamplePos, 30, tempoLineDown.bChangeSampleClick);
+    tempoLineUp.bChangeSampleClick = onOffOut(touch.x, touch.y, tempoLineUp.changeSamplePos, 30, tempoLineUp.bChangeSampleClick);
+    
+    if (touch.y>ofGetHeight()/2)
+        tempoLineDown.bChangeSampleClick = true;
+    if (touch.y<ofGetHeight()/2)
+        tempoLineUp.bChangeSampleClick = true;
 }
 
 void ofApp::touchCancelled(ofTouchEventArgs & touch){
