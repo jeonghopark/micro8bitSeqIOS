@@ -5,11 +5,13 @@
 #include "ofxiOSExtras.h"
 #include "WavFile.h"
 
+#include "ThreadedObject.h"
+
 typedef struct
 {
 	ofVec2f position;
 	bool 	bLengthBeingDragged;
-	bool 	bOnOffBeingClick;
+	bool 	bBeingClick;
 	bool 	bLengthOver;
 	bool 	bOnOffOver;
 	float 	width;
@@ -28,7 +30,7 @@ typedef struct
 	ofVec2f position;
 	ofVec2f oldPosition;
 	bool 	bLengthBeingDragged;
-	bool 	bOnOffBeingClick;
+	bool 	bBeingClick;
 	bool 	bLengthOver;
 	bool 	bOnOffOver;
 	float 	width;
@@ -155,6 +157,8 @@ class ofApp : public ofxiOSApp{
     
     int controlPointSize;
 
+    
+    ThreadedObject TO;
 };
 
 

@@ -7,6 +7,10 @@
  * 
  * Version 5
  */
+
+#pragma once
+
+
 #include <stdio.h>
 
 #include <math.h>
