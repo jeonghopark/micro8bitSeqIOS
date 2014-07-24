@@ -99,7 +99,8 @@ class ofApp : public ofxiOSApp{
     float highVolume;
     
     void audioIn(float * input, int bufferSize, int nChannels);
-    
+    void audioOut(float * output, int bufferSize, int nChannels);
+
     int	initialBufferSize;
 	int	sampleRate;
 	int	drawCounter;
@@ -158,8 +159,19 @@ class ofApp : public ofxiOSApp{
     int controlPointSize;
 
     
-    ThreadedObject TO;
-    int toCounter;
+//    ThreadedObject TO;
+//    int toCounter;
+//    int _TOIndex;
+//    int frameCounterTest;
+    
+    ThreadedObject threadedObject;
+    float tempo;
+    void phraseComplete();
+    int calculateNoteDuration();
+    bool testOnOf;
+    
+    int thredCounter;
+
 };
 
 

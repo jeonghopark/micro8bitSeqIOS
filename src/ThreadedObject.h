@@ -1,33 +1,39 @@
 #pragma once
 
-#ifndef _THREADED_OBJECT
-#define _THREADED_OBJECT
-
 #include "ofMain.h"
+#include "ofThread.h"
 
-class ThreadedObject : public ofThread{
+class ofApp;
+
+class ThreadedObject : public ofThread
+{
     
 public:
     
-    ThreadedObject();
+//    ThreadedObject();
     
-    void setup();
-    void start();
+//    void setup();
+//    void start();
+    void start(ofApp* p);
     void stop();
     
-    void setTempo(float _tempo);
+    int notes;
+    int notesPerPhrase;
+
+//    void setTempo(float _tempo);
     
     void threadedFunction();
+    void getCount();
+
+//    void draw();
+//    void play();
+//    
+//    int count;
+//    
+//    float tempo;
+//    bool trigger;
     
-    void draw();
-    void play();
-    
-    int count;
-    
-    float tempo;
-    bool trigger;
-    
+    ofApp* parent;
+
 
 };
-
-#endif
