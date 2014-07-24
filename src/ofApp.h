@@ -163,7 +163,10 @@ class ofApp : public ofxiOSApp{
     float lengthOfOneBeatInSamples;
 
     int counterBPM;
-    
+    bool startBeatDetected;
+    int beatIndex;
+    int beatIndexUp;
+    int delayTempoLineUp;
 };
 
 
