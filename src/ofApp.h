@@ -159,6 +159,7 @@ class ofApp : public ofxiOSApp{
 
     
     ThreadedObject TO;
+    int toCounter;
 };
 
 

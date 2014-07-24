@@ -19,7 +19,7 @@ void ThreadedObject::setup(){
 }
 
 void ThreadedObject::start(){
-    startThread(true, false);   // blocking, verbose
+    startThread();   // blocking, verbose
 }
 
 void ThreadedObject::stop(){
@@ -31,7 +31,7 @@ void ThreadedObject::stop(){
 
 
 void ThreadedObject::setTempo(float _tempo){
-    tempo = round(60000.0/_tempo);
+    tempo = round(60000.0/(_tempo*2));
 }
 
 
@@ -42,9 +42,9 @@ void ThreadedObject::threadedFunction(){
         if( lock() ){
             count++;
             if(count > 50000) count = 0;
+            trigger = true;
             unlock();
             ofSleepMillis(1 * tempo);
-            trigger = true;
         } else {
             trigger = false;
         }
