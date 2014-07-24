@@ -5,8 +5,6 @@
 #include "ofxiOSExtras.h"
 #include "WavFile.h"
 
-#include "ThreadedObject.h"
-
 typedef struct
 {
 	ofVec2f position;
@@ -99,7 +97,7 @@ class ofApp : public ofxiOSApp{
     float highVolume;
     
     void audioIn(float * input, int bufferSize, int nChannels);
-    void audioOut(float * output, int bufferSize, int nChannels);
+    void audioRequested(float *output, int bufferSize, int numChannels);
 
     int	initialBufferSize;
 	int	sampleRate;
@@ -158,20 +156,14 @@ class ofApp : public ofxiOSApp{
     
     int controlPointSize;
 
-    
-//    ThreadedObject TO;
-//    int toCounter;
-//    int _TOIndex;
-//    int frameCounterTest;
-    
-    ThreadedObject threadedObject;
-    float tempo;
-    void phraseComplete();
-    int calculateNoteDuration();
-    bool testOnOf;
-    
-    int thredCounter;
+    void setBPM(float targetBPM);
+    int pos;
+    float BPM;
+    int SAMPLE_RATE;
+    float lengthOfOneBeatInSamples;
 
+    int counterBPM;
+    
 };
 
 

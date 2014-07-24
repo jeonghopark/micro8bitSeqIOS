@@ -127,12 +127,10 @@ void ofApp::setup(){
         elementLinesUp[i].triggerColor = 120;
     }
     
+    SAMPLE_RATE = 44100;
+	setBPM(120.0);
+
     
-    tempo = 125.0f;
-    threadedObject.notesPerPhrase = 1;
-    threadedObject.start(this);
-    
-    thredCounter = 0;
 }
 
 void ofApp::update(){
@@ -206,7 +204,7 @@ void ofApp::update(){
     millisDown = ofGetElapsedTimeMillis();
     
     
-    int _indexCounter = thredCounter%8;
+    int _indexCounter = counterBPM%8;
 
     if ((elementLinesDown[_indexCounter].soundTrigger)&&tempoLineDown.bBeingClick){
         elementLinesDown[_indexCounter].onOffTrigger = true;
@@ -282,27 +280,6 @@ void ofApp::update(){
 }
 
 
-void ofApp::phraseComplete()
-{
-    
-    cout << "Bang + " << thredCounter << endl;
-    testOnOf = true;
-    
-    thredCounter++;
-    //    onOffRect = true;
-    // Play sounds here
-    // This is called exactly at every four measures at 125bpm
-    
-}
-
-//--------------------------------------------------------------
-int ofApp::calculateNoteDuration()
-{
-    
-    // Translate tempo to milliseconds
-    return (int)floor(60000.0000f / tempo);
-    
-}
 
 void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos){
     ofPushStyle();
@@ -609,14 +586,32 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     }
 }
 
-void ofApp::audioOut(float * output, int bufferSize, int nChannels){
-    
-    //		for(int i = 0; i < bufferSize; i++){
-    //			output[i * nChannels] = ofRandomf();
-    //			output[i * nChannels + 1] = ofRandomf();
-    //		}
-	
+void ofApp::audioRequested(float *output, int bufferSize, int numChannels) {
+	bool startBeatDetected=false;
+	int i;
+	for(i = 0; i < bufferSize; i++) {
+        pos++; // this gets incremented with every sample
+               // when lengthOfOneBeatInSamples goes into
+               // pos a whole number of times, we've entered a new quarter beat
+        if(fmod(pos,lengthOfOneBeatInSamples)==0) {
+            startBeatDetected=true;
+        }
+    }
+	// was a new beat region entered during the last frame?
+	if(startBeatDetected){
+        counterBPM++;
+	}
 }
+
+
+void ofApp::setBPM(float targetBPM){
+	// NB. Currently the target BPM might not actually be achieved,
+	// because permitted BPMs are limited to divisible by a whole number of samples.
+	lengthOfOneBeatInSamples = (int)((SAMPLE_RATE*60.0f)/targetBPM);
+	BPM=(SAMPLE_RATE*60.0f)/lengthOfOneBeatInSamples;
+}
+
+
 void ofApp::audioIn(float * input, int bufferSize, int nChannels)
 {
     
