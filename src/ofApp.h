@@ -159,7 +159,6 @@ class ofApp : public ofxiOSApp{
     void setBPM(float targetBPM);
     int pos;
     float BPM;
-    int SAMPLE_RATE;
     float lengthOfOneBeatInSamples;
 
     int counterBPM;
@@ -167,6 +166,12 @@ class ofApp : public ofxiOSApp{
     int beatIndex;
     int beatIndexUp;
     int delayTempoLineUp;
+    
+    float speedTempo;
+    
+    void touchGuideLine();
+    
+    float rectSizeRatio;
 };
 
 
