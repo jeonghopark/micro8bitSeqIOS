@@ -13,8 +13,8 @@ typedef struct
 	bool 	bLengthOver;
 	bool 	bOnOffOver;
 	float 	width;
-    ofVec2f onOffRect;
-    ofVec2f lengthRect;
+    ofVec2f onOffRectPos;
+    ofVec2f pitchRectPos;
     bool onOffTrigger;
     bool soundTrigger;
     int counter;
@@ -85,8 +85,8 @@ class ofApp : public ofxiOSApp{
     
     void threadedFunction();
     
-    bool inOutCal(float x, float y, ofVec2f xyN, int distSize);
-    bool onOffOut(float x, float y, ofVec2f xyN, int distSize, bool _b);
+    bool inOutCal(ofVec2f input, ofVec2f xyN, int distSize);
+    bool onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b);
     
     int speedUp;
     int speedDown;
@@ -110,14 +110,14 @@ class ofApp : public ofxiOSApp{
 	int channels;
     
     int nElementLine;
-    controlElementLine elementLinesDown[8];
-    controlElementLine elementLinesUp[8];
+    controlElementLine elementDown[8];
+    controlElementLine elementUp[8];
     
     float spacingLineDown;
     float spacingLineUp;
     
-    controlTempoLine tempoLineDown;
-    controlTempoLine tempoLineUp;
+    controlTempoLine downPart;
+    controlTempoLine upPart;
     
     vector <ofSoundPlayer> draggedSound;
     ofPoint dragPt;
@@ -136,7 +136,10 @@ class ofApp : public ofxiOSApp{
     bool bangUp;
     bool bangDown;
     
+    void downPartDraw();
+    void upPartDraw();
     
+    float recBlockSize;
     
     ofDirectory dir;
     vector<ofSoundPlayer> soundsList;
@@ -154,7 +157,7 @@ class ofApp : public ofxiOSApp{
     
     float randomY[16];
     
-    int controlPointSize;
+    int controlRectSize;
 
     void setBPM(float targetBPM);
     int pos;
@@ -165,13 +168,15 @@ class ofApp : public ofxiOSApp{
     bool startBeatDetected;
     int beatIndex;
     int beatIndexUp;
-    int delayTempoLineUp;
+    int delayupPart;
     
     float speedTempo;
     
     void touchGuideLine();
     
     float rectSizeRatio;
+    
+    ofVec2f touchPos;
 };
 
 
