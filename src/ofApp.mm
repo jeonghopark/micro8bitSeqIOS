@@ -1,5 +1,6 @@
 #include "ofApp.h"
 
+//--------------------------------------------------------------
 void ofApp::setup(){
     
     ofSetOrientation(OF_ORIENTATION_90_RIGHT);
@@ -66,8 +67,8 @@ void ofApp::setup(){
     downPart.soundVolume = 1;
     downPart.changeSampleIndex = 0;
     downPart.myWavWriter.setFormat(1, sampleRate, 16);
-    downPart.onOffRectPos.x = -downPart.length/2 + ofGetWidth()/2;
-    downPart.lengthRectPos.x = downPart.length/2 + ofGetWidth()/2;
+    downPart.onOffRectPos.x = -downPart.length*0.5 + ofGetWidth()*0.5;
+    downPart.lengthRectPos.x = downPart.length*0.5 + ofGetWidth()*0.5;
     downPart.changeSampleSize = 60;
     
     upPart.length = downPart.length;
@@ -82,12 +83,12 @@ void ofApp::setup(){
     upPart.soundVolume = 1;
     upPart.changeSampleIndex = 0;
     upPart.myWavWriter.setFormat(1, sampleRate, 16);
-    upPart.onOffRectPos.x = -upPart.length/2 + ofGetWidth()/2;
-    upPart.lengthRectPos.x = upPart.length/2 + ofGetWidth()/2;
+    upPart.onOffRectPos.x = -upPart.length*0.5 + ofGetWidth()*0.5;
+    upPart.lengthRectPos.x = upPart.length*0.5 + ofGetWidth()*0.5;
     upPart.changeSampleSize = 60;
     
     upPart.position.x = upPart.lengthRectPos.x-downPart.lengthRectPos.x;
-    upPart.delayPos.x = upPart.length/2 + ofGetWidth()/2 - upPart.length/(10*2);
+    upPart.delayPos.x = upPart.length*0.5 + ofGetWidth()*0.5 - upPart.length/(10*2);
     
     nElementLine = 8;
     for (int i = 0; i<nElementLine; i++){
@@ -100,7 +101,7 @@ void ofApp::setup(){
         elementDown[i].samplePlay.loadSound(fileNameDown);
         elementDown[i].samplePlay.setVolume(sampleMainVolume);
         spacingLineDown = downPart.length / 10;
-        elementDown[i].position = ofVec2f(spacingLineDown + spacingLineDown/2 + spacingLineDown*i,
+        elementDown[i].position = ofVec2f(spacingLineDown + spacingLineDown*0.5 + spacingLineDown*i,
                                           downPart.onOffRectPos.y);
         elementDown[i].pitchRectPos = ofVec2f(elementDown[i].position.x, elementDown[i].position.y+randomY[i]);
         elementDown[i].onOffRectPos = elementDown[i].pitchRectPos * ofVec2f(1,-1) + ofVec2f(0,ofGetHeight());
@@ -116,7 +117,7 @@ void ofApp::setup(){
         elementUp[i].samplePlay.loadSound(fileNameUp);
         elementUp[i].samplePlay.setVolume(sampleMainVolume);
         spacingLineUp = upPart.length / 10;
-        elementUp[i].position = ofVec2f(spacingLineUp + spacingLineUp/2 + spacingLineUp*i,
+        elementUp[i].position = ofVec2f(spacingLineUp + spacingLineUp*0.5 + spacingLineUp*i,
                                         upPart.onOffRectPos.y);
         elementUp[i].pitchRectPos = ofVec2f(elementUp[i].position.x, elementUp[i].position.y-randomY[i+8]);
         elementUp[i].onOffRectPos = elementUp[i].pitchRectPos * ofVec2f(1,-1) + ofVec2f(0,ofGetHeight());
@@ -133,20 +134,21 @@ void ofApp::setup(){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::update(){
     
     ofSoundUpdate();
     
     float _recBlockPosCh = recBlockSize * 0.5 + 10;
-    downPart.recBlockPos = ofVec2f(downPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()/2+ofGetHeight()*0.1);
-    downPart.changeSamplePos = ofVec2f(downPart.lengthRectPos.x, ofGetHeight()/2+ofGetHeight()*0.09);
+    downPart.recBlockPos = ofVec2f(downPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5+ofGetHeight()*0.1);
+    downPart.changeSamplePos = ofVec2f(downPart.lengthRectPos.x, ofGetHeight()*0.5+ofGetHeight()*0.09);
     
-    upPart.recBlockPos = ofVec2f(upPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()/2-ofGetHeight()*0.1);
-    upPart.changeSamplePos = ofVec2f(upPart.lengthRectPos.x,ofGetHeight()/2-ofGetHeight()*0.09);
+    upPart.recBlockPos = ofVec2f(upPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5-ofGetHeight()*0.1);
+    upPart.changeSamplePos = ofVec2f(upPart.lengthRectPos.x,ofGetHeight()*0.5-ofGetHeight()*0.09);
     
     downPart.length = downPart.lengthRectPos.x - downPart.onOffRectPos.x;
-    downPart.onOffRectPos.x = -downPart.length/2 + ofGetWidth()/2;
-    downPart.lengthRectPos.x = downPart.length/2 + ofGetWidth()/2;
+    downPart.onOffRectPos.x = -downPart.length*0.5 + ofGetWidth()*0.5;
+    downPart.lengthRectPos.x = downPart.length*0.5 + ofGetWidth()*0.5;
     
     delayupPart = (int)(upPart.position.x)/12;
     
@@ -174,16 +176,15 @@ void ofApp::update(){
         }
     }
     
-    
-    spacingLineDown = downPart.length / 10;
-    spacingLineUp = downPart.length / 10;
+    spacingLineDown = downPart.length * 0.1;
+    spacingLineUp = downPart.length * 0.1;
     
     upPart.lengthRectPos.x = downPart.lengthRectPos.x + spacingLineUp * delayupPart * 0.25;
     upPart.onOffRectPos.x = downPart.onOffRectPos.x + spacingLineUp * delayupPart * 0.25;
     upPart.length = upPart.lengthRectPos.x - upPart.onOffRectPos.x;
     
     for (int i = 0; i<nElementLine; i++){
-        elementDown[i].position = ofVec2f(downPart.onOffRectPos.x + spacingLineDown + spacingLineDown/2 + spacingLineDown*i,
+        elementDown[i].position = ofVec2f(downPart.onOffRectPos.x + spacingLineDown + spacingLineDown*0.5 + spacingLineDown*i,
                                           downPart.onOffRectPos.y);
         elementDown[i].pitchRectPos = ofVec2f(elementDown[i].position.x, elementDown[i].pitchRectPos.y);
         elementDown[i].onOffRectPos = elementDown[i].pitchRectPos * ofVec2f(1,0) + ofVec2f(0,controlRectSize);
@@ -200,12 +201,13 @@ void ofApp::update(){
         downPart.bDownSoundRecordClick = true;
     }
     
-    downPart.bDownSoundRecordPos = ofVec2f( downPart.recBlockPos.x, downPart.recBlockPos.y-(recBlockSize-1)/2 );
-    upPart.bDownSoundRecordPos = ofVec2f( upPart.recBlockPos.x, upPart.recBlockPos.y-(recBlockSize-1)/2 );
+    downPart.bDownSoundRecordPos = ofVec2f( downPart.recBlockPos.x, downPart.recBlockPos.y-(recBlockSize-1)*0.5 );
+    upPart.bDownSoundRecordPos = ofVec2f( upPart.recBlockPos.x, upPart.recBlockPos.y-(recBlockSize-1)*0.5 );
 
 }
 
 
+//--------------------------------------------------------------
 void ofApp::draw(){
     
     downPartDraw();
@@ -236,10 +238,10 @@ void ofApp::draw(){
     else{
         ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, 220, 50) );
     }
-    //        ofRect(upPart.changeSamplePos.x-upPart.changeSampleSize/2, upPart.changeSamplePos.y-upPart.changeSampleSize/2, upPart.changeSampleSize, upPart.changeSampleSize);
+    //        ofRect(upPart.changeSamplePos.x-upPart.changeSampleSize*0.5, upPart.changeSamplePos.y-upPart.changeSampleSize*0.5, upPart.changeSampleSize, upPart.changeSampleSize);
     //        ofNoFill();
     //        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
-    //        ofLine(upPart.changeSamplePos.x+upPart.changeSampleSize/2,upPart.changeSamplePos.y+upPart.changeSampleSize/2,upPart.lengthRectPos.x+3,upPart.lengthRectPos.y+ofGetHeight()/2-7);
+    //        ofLine(upPart.changeSamplePos.x+upPart.changeSampleSize*0.5,upPart.changeSamplePos.y+upPart.changeSampleSize*0.5,upPart.lengthRectPos.x+3,upPart.lengthRectPos.y+ofGetHeight()*0.5-7);
     ofPopStyle();
     
     //    }
@@ -261,7 +263,7 @@ void ofApp::draw(){
     //        ofRect(downPart.changeSamplePos.x-30, downPart.changeSamplePos.y-30, 60, 60);
     //        ofNoFill();
     //        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, 80) );
-    //        ofLine(downPart.changeSamplePos.x+30,downPart.changeSamplePos.y-30,downPart.lengthRectPos.x+3,downPart.lengthRectPos.y+ofGetHeight()/2+7);
+    //        ofLine(downPart.changeSamplePos.x+30,downPart.changeSamplePos.y-30,downPart.lengthRectPos.x+3,downPart.lengthRectPos.y+ofGetHeight()*0.5+7);
     ofPopStyle();
     //    }
     ofPopStyle();
@@ -274,10 +276,11 @@ void ofApp::draw(){
 }
 
 
+//--------------------------------------------------------------
 void ofApp::downPartDraw(){
     
     ofPushMatrix();
-    ofTranslate(0, ofGetHeight()/2);
+    ofTranslate(0, ofGetHeight()*0.5);
     
     drawingTempoLine(downPart.bBeingClick,downPart.bLengthOver,downPart.bOnOffOver,
                      downPart.lengthRectPos+ofVec2f(0,controlRectSize*0.5),downPart.onOffRectPos+ofVec2f(0,controlRectSize*0.5));
@@ -325,10 +328,11 @@ void ofApp::downPartDraw(){
 }
 
 
+//--------------------------------------------------------------
 void ofApp::upPartDraw() {
     
     ofPushMatrix();
-    ofTranslate(0, ofGetHeight()/2);
+    ofTranslate(0, ofGetHeight()*0.5);
     
     drawingTempoLine(upPart.bBeingClick, upPart.bLengthOver, upPart.bOnOffOver,
                      upPart.lengthRectPos-ofVec2f(0,controlRectSize*0.5), upPart.onOffRectPos-ofVec2f(0,controlRectSize*0.5));
@@ -379,6 +383,7 @@ void ofApp::upPartDraw() {
 
 
 
+//--------------------------------------------------------------
 void ofApp::touchGuideLine(){
     
     ofPushStyle();
@@ -392,6 +397,7 @@ void ofApp::touchGuideLine(){
 }
 
 
+//--------------------------------------------------------------
 void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos) {
     
     ofPushStyle();
@@ -408,12 +414,13 @@ void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver,
     
     ofRect(_vTSizePos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
     ofRect(_vTOnOffPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
-    ofLine(_vTOnOffPos+ofVec2f(controlRectSize*rectSizeRatio/2, 0), _vTSizePos-ofVec2f(controlRectSize*rectSizeRatio/2, 0));
+    ofLine(_vTOnOffPos+ofVec2f(controlRectSize*rectSizeRatio*0.5, 0), _vTSizePos-ofVec2f(controlRectSize*rectSizeRatio*0.5, 0));
     ofPopStyle();
     
 }
 
 
+//--------------------------------------------------------------
 void ofApp::infomationWindow() {
     
     ofPushStyle();
@@ -425,6 +432,7 @@ void ofApp::infomationWindow() {
     
 }
 
+//--------------------------------------------------------------
 void ofApp::recordingLineDraw(ofVec2f _vP){
 
     ofPushMatrix();
@@ -448,17 +456,17 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
             downPart.soundVolume = 1;
             ofFill();
             ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _dnColorOn));
-            ofRect( 0,-(recBlockSize-1)/2,recBlockSize-1,recBlockSize-1 );
+            ofRect( 0,-(recBlockSize-1)*0.5,recBlockSize-1,recBlockSize-1 );
             ofNoFill();
         } else {
             downPart.rectBlockAlphaFactor = _colorAlpha;
             downPart.soundVolume = 0;
             ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _dnColorOff));
-            ofRect( 0,-(recBlockSize-1)/2,recBlockSize-1,recBlockSize-1 );
+            ofRect( 0,-(recBlockSize-1)*0.5,recBlockSize-1,recBlockSize-1 );
         }
         ofPushStyle();
         ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _dnLineColor));
-        ofLine(0,-(recBlockSize-1)/2,downPart.onOffRectPos.x-_vP.x-5,ofGetHeight()/2-_vP.y+5+3);
+        ofLine(0,-(recBlockSize-1)*0.5,downPart.onOffRectPos.x-_vP.x-5,ofGetHeight()*0.5-_vP.y+5+3);
         ofPopStyle();
         ofPopStyle();
     } else {
@@ -468,17 +476,17 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
             upPart.soundVolume = 1;
             ofFill();
             ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _upColorOn));
-            ofRect(0,-(recBlockSize-1)/2,recBlockSize-1,recBlockSize-1);
+            ofRect(0,-(recBlockSize-1)*0.5,recBlockSize-1,recBlockSize-1);
             ofNoFill();
         } else {
             upPart.rectBlockAlphaFactor = _colorAlpha;
             upPart.soundVolume = 0;
             ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _upColorOff));
-            ofRect(0,-(recBlockSize-1)/2,recBlockSize-1,recBlockSize-1);
+            ofRect(0,-(recBlockSize-1)*0.5,recBlockSize-1,recBlockSize-1);
         }
         ofPushStyle();
         ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 230, _upLineColor));
-        ofLine(0,(recBlockSize-1)/2,upPart.onOffRectPos.x-_vP.x-5,ofGetHeight()/2-_vP.y-5-3);
+        ofLine(0,(recBlockSize-1)*0.5,upPart.onOffRectPos.x-_vP.x-5,ofGetHeight()*0.5-_vP.y-5-3);
         ofPopStyle();
         ofPopStyle();
     }
@@ -543,6 +551,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
 
 
 
+//--------------------------------------------------------------
 void ofApp::audioRequested(float *output, int bufferSize, int numChannels) {
     
 	startBeatDetected=false;
@@ -570,7 +579,7 @@ void ofApp::audioRequested(float *output, int bufferSize, int numChannels) {
                     elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
                     
                     float _spdRandom = ofRandom(0.75,1.25);
-                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()/2, 2.0, 0.4);
+                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.0, 0.4);
                     elementDown[i].samplePlay.setSpeed(_spdValueMap * _spdRandom);
                     
                     elementDown[i].samplePlay.play();
@@ -583,7 +592,7 @@ void ofApp::audioRequested(float *output, int bufferSize, int numChannels) {
                     elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
                     
                     float _spdRandom = ofRandom(0.75,1.25);
-                    float _spdValueMap = ofMap(ofGetHeight()/2+elementUp[i].pitchRectPos.y, ofGetHeight()/2, 0, 2.0, 0.4);
+                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.0, 0.4);
                     elementUp[i].samplePlay.setSpeed(_spdValueMap * _spdRandom);
                     
                     elementUp[i].samplePlay.play();
@@ -597,6 +606,7 @@ void ofApp::audioRequested(float *output, int bufferSize, int numChannels) {
 }
 
 
+//--------------------------------------------------------------
 void ofApp::setBPM(float targetBPM) {
     
 	lengthOfOneBeatInSamples = (int)((sampleRate*60.0f)/(targetBPM*8));
@@ -606,6 +616,7 @@ void ofApp::setBPM(float targetBPM) {
 
 
 
+//--------------------------------------------------------------
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
     
     if (initialBufferSize != bufferSize){
@@ -678,11 +689,13 @@ bool ofApp::onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b){
 }
 
 
+//--------------------------------------------------------------
 void ofApp::exit(){
     
 }
 
 
+//--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs & touch){
     
     ofVec2f _touchCaP = ofVec2f(touch.x-7, touch.y);
@@ -723,6 +736,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::touchMoved(ofTouchEventArgs & touch){
     
     ofVec2f _touchCaP = ofVec2f(touch.x-7, touch.y);
@@ -777,6 +791,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 }
 
 
+//--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs & touch){
     //    downPart.bChangeSampleClick = onOffOut(touch.x, touch.y, downPart.changeSamplePos, 30, downPart.bChangeSampleClick);
     //    upPart.bChangeSampleClick = onOffOut(touch.x, touch.y, upPart.changeSamplePos, 30, upPart.bChangeSampleClick);
@@ -784,6 +799,8 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
     //    if(inOutCal(touch.x, touch.y, upPart.changeSamplePos, 30)) upPart.bChangeSampleClick = false;
 }
 
+
+//--------------------------------------------------------------
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     
     ofVec2f _input = ofVec2f(touch.x, touch.y);
@@ -800,22 +817,27 @@ void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::touchCancelled(ofTouchEventArgs & touch){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::lostFocus(){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::gotFocus(){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::gotMemoryWarning(){
     
 }
 
+//--------------------------------------------------------------
 void ofApp::deviceOrientationChanged(int newOrientation){
     
 }
