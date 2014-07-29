@@ -94,9 +94,9 @@ class ofApp : public ofxiOSApp{
     string fileNameUp;
     string fileNameDown;
     
-    float highVolume;
+    float sampleMainVolume;
     
-    void audioIn(float * input, int bufferSize, int nChannels);
+    void audioReceived(float * input, int bufferSize, int nChannels);
     void audioRequested(float *output, int bufferSize, int numChannels);
 
     int	initialBufferSize;
