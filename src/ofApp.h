@@ -124,8 +124,8 @@ class ofApp : public ofxiOSApp{
     controlTempoLine downPart;
     controlTempoLine upPart;
     
-    vector <ofSoundPlayer> draggedSound;
-    ofPoint dragPt;
+//    vector <ofSoundPlayer> draggedSound;
+//    ofPoint dragPt;
     
     int backgroundColorHue;
     
@@ -183,7 +183,28 @@ class ofApp : public ofxiOSApp{
     
     ofVec2f touchPos;
     
+    int countBeat;
+    int countBeatUp;
+    int counterBPMUp;
+    
+    int indexBPM;
+    
 
+    int initialTime;
+    float setTempoMilisecond;
+    
+    ofSoundPlayer samplePlay0;
+    ofSoundPlayer samplePlay1;
+    ofSoundPlayer samplePlay2;
+    ofSoundPlayer samplePlay3;
+    ofSoundPlayer samplePlay4;
+    ofSoundPlayer samplePlay5;
+    ofSoundPlayer samplePlay6;
+    ofSoundPlayer samplePlay7;
+
+    
+    int testCounter;
+    
 };
 
 
