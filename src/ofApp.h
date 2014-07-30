@@ -5,6 +5,10 @@
 #include "ofxiOSExtras.h"
 #include "WavFile.h"
 
+
+//#define LENGTH 44100 // 10 seconds
+
+
 typedef struct
 {
 	ofVec2f position;
@@ -96,8 +100,10 @@ class ofApp : public ofxiOSApp{
     
     float sampleMainVolume;
     
+    ofSoundStream soundStream;
+
     void audioReceived(float * input, int bufferSize, int nChannels);
-    void audioRequested(float *output, int bufferSize, int numChannels);
+    void audioRequested(float *output, int bufferSize, int nChannels);
 
     int	initialBufferSize;
 	int	sampleRate;
@@ -105,7 +111,6 @@ class ofApp : public ofxiOSApp{
     int bufferCounter;
 	float * buffer;
     
-    ofSoundStream soundStream;
 	bool bIsRecording;
 	int channels;
     
@@ -177,6 +182,8 @@ class ofApp : public ofxiOSApp{
     float rectSizeRatio;
     
     ofVec2f touchPos;
+    
+
 };
 
 
