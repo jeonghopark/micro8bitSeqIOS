@@ -170,7 +170,8 @@ class ofApp : public ofxiOSApp{
     float lengthOfOneBeatInSamples;
 
     int counterBPM;
-    bool startBeatDetected;
+    bool startBeatDetectedDn;
+    bool startBeatDetectedUp;
     int beatIndex;
     int beatIndexUp;
     int delayupPart;
@@ -203,7 +204,13 @@ class ofApp : public ofxiOSApp{
     ofSoundPlayer samplePlay7;
 
     
+    float testSecond;
+    float testSecondUp;
     int testCounter;
+    int testCounterUp;
+    bool testTrigger;
+    bool bTimerReached;
+    bool bTimerReachedUp;
     
 };
 
