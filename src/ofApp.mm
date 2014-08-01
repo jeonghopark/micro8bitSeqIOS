@@ -152,9 +152,7 @@ void ofApp::update(){
     
     ofSoundUpdate();
     
-    
     float timer = ofGetElapsedTimeMillis() - testSecond;
-    float timerUp = ofGetElapsedTimeMillis() - testSecondUp;
     
     if(timer >= speedTempo && !bTimerReached) {
         bTimerReached = true;
@@ -735,7 +733,7 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 //--------------------------------------------------------------
 void ofApp::setBPM(float targetBPM) {
     
-	lengthOfOneBeatInSamples = (int)((sampleRate*60.0f)/(targetBPM*8));
+	lengthOfOneBeatInSamples = (int)((sampleRate*60.0f)/(targetBPM));
 	BPM=(sampleRate*60.0f)/lengthOfOneBeatInSamples;
     
 }
