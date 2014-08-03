@@ -222,7 +222,10 @@ public:
     void tonicSetting();
 
     maxiSample sampleMaxim;
-    
+    maxiMix outputTwoChannel;
+    double wave;
+    double outputTwoChannels[2];
+
 };
 
 
