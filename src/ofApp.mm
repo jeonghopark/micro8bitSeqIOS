@@ -131,6 +131,8 @@ void ofApp::setup(){
     
     rectSizeRatio = 0.5;
 
+    recBlockSize = initialBufferSize * 0.25;
+
     
 //    tempo = 700;
     tempo = ofMap(downPart.length/12, 24, 1024/12, 650, 250);
