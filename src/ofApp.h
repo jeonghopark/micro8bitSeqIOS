@@ -67,31 +67,28 @@ controlTempoLine;
 
 class ofApp : public ofxiOSApp{
 	
-    public:
-        void setup();
-        void update();
-        void draw();
-        void exit();
+public:
+    void setup();
+    void update();
+    void draw();
+    void exit();
 	
-        void touchDown(ofTouchEventArgs & touch);
-        void touchMoved(ofTouchEventArgs & touch);
-        void touchUp(ofTouchEventArgs & touch);
-        void touchDoubleTap(ofTouchEventArgs & touch);
-        void touchCancelled(ofTouchEventArgs & touch);
-
-        void lostFocus();
-        void gotFocus();
-        void gotMemoryWarning();
-        void deviceOrientationChanged(int newOrientation);
-
+    void touchDown(ofTouchEventArgs & touch);
+    void touchMoved(ofTouchEventArgs & touch);
+    void touchUp(ofTouchEventArgs & touch);
+    void touchDoubleTap(ofTouchEventArgs & touch);
+    void touchCancelled(ofTouchEventArgs & touch);
+    
+    void lostFocus();
+    void gotFocus();
+    void gotMemoryWarning();
+    void deviceOrientationChanged(int newOrientation);
+    
     
     void threadedFunction();
     
     bool inOutCal(ofVec2f input, ofVec2f xyN, int distSize);
     bool onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b);
-    
-    int speedUp;
-    int speedDown;
     
     string fileNameUp;
     string fileNameDown;
@@ -109,9 +106,6 @@ class ofApp : public ofxiOSApp{
     int bufferCounter;
 	float * buffer;
     
-	bool bIsRecording;
-	int channels;
-    
     int nElementLine;
     controlElementLine elementDown[8];
     controlElementLine elementUp[8];
@@ -122,22 +116,10 @@ class ofApp : public ofxiOSApp{
     controlTempoLine downPart;
     controlTempoLine upPart;
     
-    //    vector <ofSoundPlayer> draggedSound;
-    //    ofPoint dragPt;
-    
     int backgroundColorHue;
     
-    int tempoLineRelativePos;
-    
-    int tempoDistanceFactor;
-    
-    int triggerCounterUp;
-    int triggerCounterDown;
     
     int startTime;
-    int millisDown;
-    bool bangUp;
-    bool bangDown;
     
     void downPartDraw();
     void upPartDraw();
@@ -147,8 +129,6 @@ class ofApp : public ofxiOSApp{
     ofDirectory dir;
     vector<ofSoundPlayer> soundsList;
     
-    int currentSound;
-    
     void drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos);
     
     bool soundRecordingDownOn;
@@ -156,25 +136,13 @@ class ofApp : public ofxiOSApp{
     
     void recordingLineDraw(ofVec2f _vP);
     
-    void infomationWindow();
+    void fadeInBackground();
     
     float randomY[16];
     
     int controlRectSize;
     
-//    void setBPM(float targetBPM);
-    int pos;
-    float BPM;
-    float lengthOfOneBeatInSamples;
-    
-    int counterBPM;
-    bool startBeatDetectedDn;
-    bool startBeatDetectedUp;
-    int beatIndex;
-    int beatIndexUp;
     int delayupPart;
-    
-    float speedTempo;
     
     void touchGuideLine();
     
@@ -182,58 +150,17 @@ class ofApp : public ofxiOSApp{
     
     ofVec2f touchPos;
     
-    int countBeat;
-    int countBeatUp;
-    int counterBPMUp;
-    
-    int indexBPM;
-    
-    
-    int initialTime;
-    float setTempoMilisecond;
-    
-    
-    float testSecond;
-    float testSecondUp;
-    int testCounter;
-    int testCounterUp;
-    bool testTrigger;
-    bool bTimerReached;
-    bool bTimerReachedUp;
-    
-    
-    // Tonic
-    void receiveTrigger(float & note);
-    int noteView;
-    float oldNote;
-    
-    void receiveTrigger2(float & note);
-    int noteView2;
-    float oldNote2;
-    
-    void tonicSetting();
-    
-    double wave;
-    double outputTwoChannels[2];
-    int controlPointSize;
-    int delayTempoLineUp;
-    
-//    ThreadedObject TO;
-//    int toCounter;
-//    int _TOIndex;
-//    int frameCounterTest;
-    
+    // Thread
     ThreadedObject threadedObject;
     float tempo;
     void phraseComplete();
     int calculateNoteDuration();
-    bool testOnOf;
     
     int thredCounter;
-    int _indexCounterDn;
-    int _indexCounterUp;
-
-
+    int indexCounterDn;
+    int indexCounterUp;
+    
+    
 };
 
 

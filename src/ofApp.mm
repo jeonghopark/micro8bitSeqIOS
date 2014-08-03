@@ -2,11 +2,11 @@
 
 void ofApp::setup(){
     
-    //    ofSetWindowTitle("micro 8Bit sequencer");
     ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     ofEnableAlphaBlending();
     ofSetCircleResolution(24);
-    
+
+    ofSetFrameRate(60);
     
     ofxAccelerometer.setup();
     ofxMultiTouch.addListener(this);
@@ -22,10 +22,6 @@ void ofApp::setup(){
     memset(buffer, 0, initialBufferSize * sizeof(float));
     
     ofSoundStreamSetup(2, 1, this, sampleRate, initialBufferSize, 4);
-    //    ofSoundStreamSetup(2, 0, this, sampleRate, initialBufferSize, 4);
-    //    soundStream.setup(this, 2, 1, sampleRate, initialBufferSize, 4);
-    ofSetFrameRate(60);
-    
     
     dir.listDir("sounds/samples/");
     dir.sort();
@@ -35,19 +31,12 @@ void ofApp::setup(){
 //    for(int i = 0; i < (int)dir.size(); i++){
 //        soundsList[i].loadSound(dir.getPath(i));
 //    }
-    currentSound = 0;
     
     fileNameUp = "tap_02.caf";
     fileNameDown = "tap_01.caf";
     sampleMainVolume = 0.85;
     
-    triggerCounterUp = 0;
-    triggerCounterDown = 0;
-    
     startTime = ofGetElapsedTimeMillis();
-    millisDown = ofGetElapsedTimeMillis();
-    bangUp = false;
-    bangDown = false;
     
     soundRecordingDownOn = true;
     
@@ -93,13 +82,13 @@ void ofApp::setup(){
     upPart.delayPos.x = upPart.length*0.5 + ofGetWidth()*0.5 - upPart.length/(10*2);
     
     nElementLine = 8;
-    for (int i = 0; i<nElementLine; i++){
+    for (int i = 0; i<nElementLine; i++) {
         elementDown[i].bLengthOver = false;
         elementDown[i].bOnOffOver = false;
         elementDown[i].bLengthBeingDragged = false;
         elementDown[i].bBeingClick = false;
         elementDown[i].soundTrigger = true;
-        //        elementDown[i].samplePlay.setMultiPlay(true);
+        elementDown[i].samplePlay.setMultiPlay(true);
         elementDown[i].samplePlay.loadSound(fileNameDown);
         elementDown[i].samplePlay.setVolume(sampleMainVolume);
         elementDown[i].samplePlay.setLoop(false);
@@ -116,7 +105,7 @@ void ofApp::setup(){
         elementUp[i].bLengthBeingDragged = false;
         elementUp[i].bBeingClick = false;
         elementUp[i].soundTrigger = true;
-        //        elementUp[i].samplePlay.setMultiPlay(true);
+        elementUp[i].samplePlay.setMultiPlay(true);
         elementUp[i].samplePlay.loadSound(fileNameUp);
         elementUp[i].samplePlay.setVolume(sampleMainVolume);
         elementUp[i].samplePlay.setLoop(false);
@@ -132,9 +121,7 @@ void ofApp::setup(){
     rectSizeRatio = 0.5;
 
     recBlockSize = initialBufferSize * 0.25;
-
     
-//    tempo = 700;
     tempo = ofMap(downPart.length/12, 24, 1024/12, 650, 250);
 
     threadedObject.notesPerPhrase = 1;
@@ -158,139 +145,9 @@ void ofApp::update(){
     downPart.onOffRectPos.x = -downPart.length*0.5 + ofGetWidth()*0.5;
     downPart.lengthRectPos.x = downPart.length*0.5 + ofGetWidth()*0.5;
 
-        
     delayupPart = (int)(upPart.position.x)/24;
     
     tempo = ofMap(downPart.length/12, 24, 1024/12, 650, 250);
-    
-    cout << downPart.length/12 << endl;
-    cout << "tempo + " << tempo << endl;
-    
-    //    speedTempo = ofMap(downPart.length/12, 0, 1024/12, 55, 160);
-    setTempoMilisecond = ofMap(downPart.length/12, 0, 1024/12, 20, 60);
-//    setBPM(speedTempo);
-
-    
-    int _speedFactor8th = 4;
-    int _index = counterBPM%32;
-    int _indexUp = counterBPMUp%32;
-    
-//    for (int i = 0; i<nElementLine; i++) {
-//        if (_index==((i*_speedFactor8th))) {
-//            if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
-//                elementDown[i].onOffTrigger = true;
-//            }
-//        } else {
-//            elementDown[i].onOffTrigger = false;
-//        }
-//        
-//        if (_indexUp==((i*_speedFactor8th)+delayupPart)) {
-//            if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
-//                elementUp[i].onOffTrigger = true;
-//            }
-//        } else {
-//            elementUp[i].onOffTrigger = false;
-//        }
-//    }
-    
-    float timer = (ofGetElapsedTimeMillis()-millisDown)*1.0;
-    int speedFactor = 32;
-    int speedFactor8th = speedFactor/8;
-    
-    int _speed = (float)ofMap(downPart.length/12, 0, 1024/12, 2, 30);
-    
-    
-    //    TO.setTempo(_speed);
-    
-    
-    //    if(TO.trigger) {
-    //        toCounter++;
-    //        cout << toCounter << endl;
-    //        if(toCounter>8) toCounter = 0;
-    //    }
-    
-    
-    //    if (timer>=speed){
-    //        millisDown = ofGetElapsedTimeMillis();
-    //
-    //        triggerCounterDown++;
-    //        int _index = triggerCounterDown%speedFactor;
-    //
-    //        for (int i = 0; i<nElementLine; i++){
-    //            if (_index==((i*speedFactor8th))){
-    //                if ((elementLinesDown[i].soundTrigger)&&tempoLineDown.bBeingClick){
-    //                    elementLinesDown[i].onOffTrigger = true;
-    //                    elementLinesDown[i].samplePlay.play();
-    //                    elementLinesDown[i].samplePlay.setVolume( ofRandom(0.325,0.95) * tempoLineDown.soundVolume);
-    //                    elementLinesDown[i].samplePlay.setSpeed( ofMap(elementLinesDown[i].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0) * ofRandom(0.75,1.25) );
-    //                }
-    //            }
-    //            else{
-    //                elementLinesDown[i].onOffTrigger = false;
-    //            }
-    //
-    //            if (_index==((i*speedFactor8th)+delayupPart%8)){
-    //                if ((elementLinesUp[i].soundTrigger)&&tempoLineUp.bBeingClick){
-    //                    elementLinesUp[i].onOffTrigger = true;
-    //                    elementLinesUp[i].samplePlay.play();
-    //                    elementLinesUp[i].samplePlay.setVolume( ofRandom(0.325,0.95) * tempoLineUp.soundVolume);
-    //                    elementLinesUp[i].samplePlay.setSpeed( ofMap(elementLinesUp[i].lengthRect.y+ofGetHeight()/2, ofGetHeight()/2, 0, 3.0, 0) * ofRandom(0.75,1.25) );
-    //                }
-    //            }
-    //            else{
-    //                elementLinesUp[i].onOffTrigger = false;
-    //            }
-    //        }
-    //    }
-    
-    
-    
-    //    if (timer>=speed){
-    millisDown = ofGetElapsedTimeMillis();
-    
-
-//    int _index = triggerCounterDown%speedFactor;
-    
-    //    cout << TO.trigger << endl;
-    
-    
-    //    if (TO.trigger) {
-    //        TO.trigger = false;
-    //        _TOIndex = TO.count%32;
-    //        if (_TOIndex%4==0) {
-    //            elementLinesDown[0].samplePlay.play();
-    //        }
-    //    }
-    
-    //    if (TO.trigger) {
-    //        TO.trigger = false;
-    //        _TOIndex = TO.count%32;
-    //        if (_TOIndex%4==0) {
-    //            int _indexCounter = _TOIndex / 4;
-    //            if ((elementLinesDown[_indexCounter].soundTrigger)&&tempoLineDown.bBeingClick){
-    //                elementLinesDown[_indexCounter].onOffTrigger = true;
-    //                elementLinesDown[_indexCounter].samplePlay.play();
-    //                //                    elementLinesDown[i].samplePlay.setVolume( ofRandom(0.325,0.95) * tempoLineDown.soundVolume);
-    //                elementLinesDown[_indexCounter].samplePlay.setVolume( tempoLineDown.soundVolume);
-    ////                elementLinesDown[_indexCounter].samplePlay.setSpeed( ofMap(elementLinesDown[_indexCounter].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0) * ofRandom(0.75,1.25) );
-    //                elementLinesDown[_indexCounter].samplePlay.setSpeed( ofMap(elementLinesDown[_indexCounter].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0));
-    //            }
-    //        }
-    ////                if (_TOIndex%4==(delayupPart%8)) {
-    ////                    int _indexCounter = _TOIndex / 4;
-    ////                    cout << _indexCounter << endl;
-    ////                    if ((elementLinesUp[_indexCounter].soundTrigger)&&tempoLineUp.bBeingClick){
-    ////                        elementLinesUp[_indexCounter].onOffTrigger = true;
-    ////                        elementLinesUp[_indexCounter].samplePlay.play();
-    ////                        //                    elementLinesDown[i].samplePlay.setVolume( ofRandom(0.325,0.95) * tempoLineDown.soundVolume);
-    ////                        elementLinesUp[_indexCounter].samplePlay.setVolume( tempoLineUp.soundVolume);
-    ////                        elementLinesUp[_indexCounter].samplePlay.setSpeed( ofMap(elementLinesUp[_indexCounter].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0) * ofRandom(0.75,1.25) );
-    ////                    }
-    ////
-    ////                }
-    //    }
-    
-    
     
     
     spacingLineDown = downPart.length / 10;
@@ -324,19 +181,12 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::phraseComplete(){
     
-    testOnOf = true;
-    
     thredCounter++;
     
-    //    onOffRect = true;
-    // Play sounds here
-    // This is called exactly at every four measures at 125bpm
-    
-    
     if (thredCounter%2==0) {
-        _indexCounterDn++;
+        indexCounterDn++;
 
-        int _index = _indexCounterDn%8;
+        int _index = indexCounterDn%8;
         
         if ((elementDown[_index].soundTrigger)&&downPart.bBeingClick){
             elementDown[_index].onOffTrigger = true;
@@ -354,9 +204,9 @@ void ofApp::phraseComplete(){
     
     
     if ((thredCounter+delayupPart)%2==0) {
-        _indexCounterUp++;
+        indexCounterUp++;
 
-        int _index = _indexCounterDn%8;
+        int _index = indexCounterDn%8;
 
         if ((elementUp[_index].soundTrigger)&&upPart.bBeingClick){
             elementUp[_index].onOffTrigger = true;
@@ -371,16 +221,11 @@ void ofApp::phraseComplete(){
         }
     }
 
-
 }
 
 //--------------------------------------------------------------
-int ofApp::calculateNoteDuration()
-{
-    
-    // Translate tempo to milliseconds
+int ofApp::calculateNoteDuration() {
     return (int)floor(60000.0000f / tempo);
-    
 }
 
 
@@ -398,8 +243,7 @@ void ofApp::draw(){
         recordingLineDraw(upPart.recBlockPos);
     }
     
-    
-    //    infomationWindow();
+    //    fadeInBackground();
     //    touchGuideLine();
     //    ofDrawBitmapString(ofToString(ofGetFrameRate(),2), 10, 10);
     
@@ -551,12 +395,12 @@ void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver,
 
 
 //--------------------------------------------------------------
-void ofApp::infomationWindow() {
+void ofApp::fadeInBackground() {
     
     ofPushStyle();
-    startTime = startTime + 1;
-    if (startTime>300) startTime = 301;
-    ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, ofMap(startTime,0,300,0,230), ofMap(startTime,0,300,255,0) ) );
+    startTime++;
+    if (startTime>700) startTime = 701;
+    ofSetColor( ofColor::fromHsb(backgroundColorHue, 0, ofMap(startTime,0,700,0,230), ofMap(startTime,0,700,255,0) ) );
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
     ofPopStyle();
     
@@ -685,29 +529,10 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
 
 void ofApp::audioRequested(float * output, int bufferSize, int nChannels){
     
-//    tempo = (float)ofMap(tempoLineDown.length/12, 0, 1024/12, 360, 60);
-//    
-//    int _indexCounter = thredCounter%8;
-//    
-//    if ((elementLinesDown[_indexCounter].soundTrigger)&&tempoLineDown.bBeingClick){
-//        elementLinesDown[_indexCounter].onOffTrigger = true;
-//        elementLinesDown[_indexCounter].samplePlay.play();
-//        //                    elementLinesDown[i].samplePlay.setVolume( ofRandom(0.325,0.95) * tempoLineDown.soundVolume);
-//        elementLinesDown[_indexCounter].samplePlay.setVolume( tempoLineDown.soundVolume);
-//        elementLinesDown[_indexCounter].samplePlay.setSpeed( ofMap(elementLinesDown[_indexCounter].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0) * ofRandom(0.75,1.25) );
-//        //                elementLinesDown[_indexCounter].samplePlay.setSpeed( ofMap(elementLinesDown[_indexCounter].lengthRect.y, 0, ofGetHeight()/2, 3.0, 0));
-//    }
-//    
-//    triggerCounterDown++;
-
-    //		for(int i = 0; i < bufferSize; i++){
-    //			output[i * nChannels] = ofRandomf();
-    //			output[i * nChannels + 1] = ofRandomf();
-    //		}
-	
 }
-void ofApp::audioReceived(float * input, int bufferSize, int nChannels)
-{
+
+
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
     
     if (initialBufferSize != bufferSize){
         ofLog(OF_LOG_ERROR, "your buffer size was set to %i - but the stream needs a buffer size of %i", initialBufferSize, bufferSize);
@@ -754,19 +579,6 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels)
     }
     
 }
-
-void ofApp::receiveTrigger(float &note){
-    
-    noteView = note;
-    
-}
-
-void ofApp::receiveTrigger2(float &note){
-    
-    noteView2 = note;
-    
-}
-
 
 
 //--------------------------------------------------------------
@@ -897,10 +709,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 
 //--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs & touch){
-    //    downPart.bChangeSampleClick = onOffOut(touch.x, touch.y, downPart.changeSamplePos, 30, downPart.bChangeSampleClick);
-    //    upPart.bChangeSampleClick = onOffOut(touch.x, touch.y, upPart.changeSamplePos, 30, upPart.bChangeSampleClick);
-    //    if(inOutCal(touch.x, touch.y, downPart.changeSamplePos, 30)) downPart.bChangeSampleClick = false;
-    //    if(inOutCal(touch.x, touch.y, upPart.changeSamplePos, 30)) upPart.bChangeSampleClick = false;
+
 }
 
 
