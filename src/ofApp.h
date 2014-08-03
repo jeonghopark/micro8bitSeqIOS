@@ -5,6 +5,10 @@
 #include "ofxiOSExtras.h"
 #include "WavFile.h"
 
+#include "ofxTonic.h"
+#include "ofxMaxim.h"
+
+using namespace Tonic;
 
 //#define LENGTH 44100 // 10 seconds
 
@@ -69,23 +73,25 @@ controlTempoLine;
 
 class ofApp : public ofxiOSApp{
 	
-    public:
-        void setup();
-        void update();
-        void draw();
-        void exit();
+    ofxTonicSynth synth;
+    
+public:
+    void setup();
+    void update();
+    void draw();
+    void exit();
 	
-        void touchDown(ofTouchEventArgs & touch);
-        void touchMoved(ofTouchEventArgs & touch);
-        void touchUp(ofTouchEventArgs & touch);
-        void touchDoubleTap(ofTouchEventArgs & touch);
-        void touchCancelled(ofTouchEventArgs & touch);
-
-        void lostFocus();
-        void gotFocus();
-        void gotMemoryWarning();
-        void deviceOrientationChanged(int newOrientation);
-
+    void touchDown(ofTouchEventArgs & touch);
+    void touchMoved(ofTouchEventArgs & touch);
+    void touchUp(ofTouchEventArgs & touch);
+    void touchDoubleTap(ofTouchEventArgs & touch);
+    void touchCancelled(ofTouchEventArgs & touch);
+    
+    void lostFocus();
+    void gotFocus();
+    void gotMemoryWarning();
+    void deviceOrientationChanged(int newOrientation);
+    
     
     void threadedFunction();
     
@@ -101,10 +107,10 @@ class ofApp : public ofxiOSApp{
     float sampleMainVolume;
     
     ofSoundStream soundStream;
-
+    
     void audioReceived(float * input, int bufferSize, int nChannels);
     void audioRequested(float *output, int bufferSize, int nChannels);
-
+    
     int	initialBufferSize;
 	int	sampleRate;
 	int	drawCounter;
@@ -124,8 +130,8 @@ class ofApp : public ofxiOSApp{
     controlTempoLine downPart;
     controlTempoLine upPart;
     
-//    vector <ofSoundPlayer> draggedSound;
-//    ofPoint dragPt;
+    //    vector <ofSoundPlayer> draggedSound;
+    //    ofPoint dragPt;
     
     int backgroundColorHue;
     
@@ -163,12 +169,12 @@ class ofApp : public ofxiOSApp{
     float randomY[16];
     
     int controlRectSize;
-
+    
     void setBPM(float targetBPM);
     int pos;
     float BPM;
     float lengthOfOneBeatInSamples;
-
+    
     int counterBPM;
     bool startBeatDetectedDn;
     bool startBeatDetectedUp;
@@ -190,19 +196,10 @@ class ofApp : public ofxiOSApp{
     
     int indexBPM;
     
-
+    
     int initialTime;
     float setTempoMilisecond;
     
-    ofSoundPlayer samplePlay0;
-    ofSoundPlayer samplePlay1;
-    ofSoundPlayer samplePlay2;
-    ofSoundPlayer samplePlay3;
-    ofSoundPlayer samplePlay4;
-    ofSoundPlayer samplePlay5;
-    ofSoundPlayer samplePlay6;
-    ofSoundPlayer samplePlay7;
-
     
     float testSecond;
     float testSecondUp;
@@ -211,6 +208,20 @@ class ofApp : public ofxiOSApp{
     bool testTrigger;
     bool bTimerReached;
     bool bTimerReachedUp;
+    
+
+    // Tonic
+    void receiveTrigger(float & note);
+    int noteView;
+    float oldNote;
+    
+    void receiveTrigger2(float & note);
+    int noteView2;
+    float oldNote2;
+    
+    void tonicSetting();
+
+    maxiSample sampleMaxim;
     
 };
 

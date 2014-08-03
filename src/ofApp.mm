@@ -1,5 +1,8 @@
 #include "ofApp.h"
 
+#define INT_TO_STRING( x ) dynamic_cast< std::ostringstream & >( \
+( std::ostringstream() << std::dec << x ) ).str()
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -7,7 +10,7 @@ void ofApp::setup(){
     ofEnableAlphaBlending();
     ofSetCircleResolution(24);
     
-//    ofSetFrameRate(60);
+    //    ofSetFrameRate(60);
     //    ofSetDataPathRoot(ofxiOSGetDocumentsDirectory());
     //    cout << ofxiOSGetDocumentsDirectory() << endl;
     
@@ -17,7 +20,7 @@ void ofApp::setup(){
     backgroundColorHue = ofRandom(0,255);
     ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
     
-    initialBufferSize = 1024;
+    initialBufferSize = 512;
     sampleRate = 44100;
     drawCounter = 0;
     bufferCounter = 0;
@@ -27,15 +30,6 @@ void ofApp::setup(){
     ofSoundStreamSetup(2, 1, this, sampleRate, initialBufferSize, 4);
     //    ofSoundStreamSetup(2, 0, this, sampleRate, initialBufferSize, 4);
     //    soundStream.setup(this, 2, 1, sampleRate, initialBufferSize, 4);
-    
-    samplePlay0.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay1.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay2.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay3.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay4.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay5.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay6.loadSound("sounds/samples/bell_sample_03.wav");
-    samplePlay7.loadSound("sounds/samples/bell_sample_03.wav");
     
     dir.listDir("sounds/samples/");
     dir.sort();
@@ -47,8 +41,8 @@ void ofApp::setup(){
     //    }
     currentSound = 0;
     
-    fileNameUp = "tap_02.wav";
-    fileNameDown = "tap_01.wav";
+    fileNameUp = "tap_02.caf";
+    fileNameDown = "tap_01.caf";
     sampleMainVolume = 0.85;
     
     triggerCounterUp = 0;
@@ -112,6 +106,7 @@ void ofApp::setup(){
         //        elementDown[i].samplePlay.setMultiPlay(true);
         elementDown[i].samplePlay.loadSound(fileNameDown);
         elementDown[i].samplePlay.setVolume(sampleMainVolume);
+        elementDown[i].samplePlay.setLoop(false);
         spacingLineDown = downPart.length / 10;
         elementDown[i].position = ofVec2f(spacingLineDown + spacingLineDown*0.5 + spacingLineDown*i,
                                           downPart.onOffRectPos.y);
@@ -128,6 +123,7 @@ void ofApp::setup(){
         //        elementUp[i].samplePlay.setMultiPlay(true);
         elementUp[i].samplePlay.loadSound(fileNameUp);
         elementUp[i].samplePlay.setVolume(sampleMainVolume);
+        elementUp[i].samplePlay.setLoop(false);
         spacingLineUp = upPart.length / 10;
         elementUp[i].position = ofVec2f(spacingLineUp + spacingLineUp*0.5 + spacingLineUp*i,
                                         upPart.onOffRectPos.y);
@@ -145,6 +141,11 @@ void ofApp::setup(){
     recBlockSize = initialBufferSize * 0.08;
     
     setTempoMilisecond = ofGetElapsedTimeMillis();
+    
+    tonicSetting();
+
+    sampleMaxim.load(ofToDataPath("tap_01.wav"));
+    
 }
 
 //--------------------------------------------------------------
@@ -152,107 +153,189 @@ void ofApp::update(){
     
     ofSoundUpdate();
     
-    float timer = ofGetElapsedTimeMillis() - testSecond;
+    //    cout << noteView << endl;
+    //    cout << noteView2 << endl;
+    //
+    //    if ((oldNote != noteView)) {
+    //        elementDown[noteView].samplePlay.play();
+    //        float _volRandom = ofRandom(0.35,1.0);
+    //        elementDown[noteView].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+    //        //
+    //        float _spdRandom = ofRandom(0.75,1.25);
+    //        float _spdValueMap = ofMap(elementDown[noteView].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+    //        float _value = _spdValueMap * _spdRandom;
+    //        elementDown[noteView].samplePlay.setSpeed(_value);
+    //        oldNote = noteView;
+    //    }
+    //
+    //    if ((oldNote2 != noteView2)) {
+    //        elementUp[noteView2].samplePlay.play();
+    //        float _volRandom = ofRandom(0.35,1.0);
+    //        elementUp[noteView2].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+    //        //
+    //        float _spdRandom = ofRandom(0.75,1.25);
+    //        float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[noteView2].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+    //        float _value = _spdValueMap * _spdRandom;
+    //        elementUp[noteView2].samplePlay.setSpeed(_value);
+    //        oldNote2 = noteView2;
+    //    }
     
-    if(timer >= speedTempo && !bTimerReached) {
-        bTimerReached = true;
-    }
-    
-    if (bTimerReached) {
-        testSecond = ofGetElapsedTimeMillis();
-        bTimerReached = false;
-        counterBPM++;
-        counterBPMUp++;
-
-        cout << counterBPM << endl;
-        
-        int _speedFactor8th = 2;
-        int _indexDn = counterBPM%16;
-        int _indexUp = counterBPMUp%16;
-        
-        for (int i = 0; i<nElementLine; i++) {
-            if (_indexDn==((i*_speedFactor8th))) {
-                if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
-                    float _volRandom = ofRandom(0.35,1.0);
-                    elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-                    //
-                    float _spdRandom = ofRandom(0.75,1.25);
-                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-                    float _value = _spdValueMap * _spdRandom;
-                    elementDown[i].samplePlay.setSpeed(_value);
-                    elementDown[i].samplePlay.play();
-                    bTimerReached=false;
-                }
-            }
-        }
-        
-        for (int i = 0; i<nElementLine; i++) {
-            if (_indexUp==((i*_speedFactor8th)+delayupPart)) {
-                if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
-                    float _volRandom = ofRandom(0.35,1.0);
-                    elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-                    //
-                    float _spdRandom = ofRandom(0.75,1.25);
-                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-                    float _value = _spdValueMap * _spdRandom;
-                    elementUp[i].samplePlay.setSpeed(_value);
-                    elementUp[i].samplePlay.play();
-                }
-            }
-        }
-    }
-
-
-    
-    
-//    if (bTimerReached) {
-//        testSecond = ofGetElapsedTimeMillis();
-//        testCounter++;
-//        bTimerReached = false;
-//
-//        int _indexSample = testCounter%8;
-//        
-//        if ((elementDown[_indexSample].soundTrigger)&&downPart.bBeingClick) {
-//            float _volRandom = ofRandom(0.35,1.0);
-//            elementDown[_indexSample].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-//            
-//            float _spdRandom = ofRandom(0.75,1.25);
-//            float _spdValueMap = ofMap(elementDown[_indexSample].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-//            float _value = _spdValueMap;
-//            elementDown[_indexSample].samplePlay.setSpeed(_value);
-//            elementDown[_indexSample].samplePlay.play();
-//            elementDown[_indexSample].onOffTrigger = true;
-//        }
-//
-//    }
-//    
-//    
-//    if (bTimerReachedUp) {
-//        testSecondUp = ofGetElapsedTimeMillis()+75;
-//        testCounterUp++;
-//        bTimerReachedUp = false;
-//        
-//        int _indexUpSample = testCounterUp%8;
-//        
-//        if ((elementUp[_indexUpSample].soundTrigger)&&upPart.bBeingClick) {
-//            float _volRandom = ofRandom(0.35,1.0);
-//            elementUp[_indexUpSample].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-//            
-//            float _spdRandom = ofRandom(0.75,1.25);
-//            float _spdValueMap = ofMap(elementUp[_indexUpSample].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-//            float _value = _spdValueMap;
-//            elementUp[_indexUpSample].samplePlay.setSpeed(_value);
-//            elementUp[_indexUpSample].samplePlay.play();
-//            elementUp[_indexUpSample].onOffTrigger = true;
-//        }
-//        
-//    }
-
+    //    float speed = downPart.length/12;
+    //    float timer = (ofGetElapsedTimeMillis()-millisDown)*1.0;
+    //
+    //    int delayTempoLineUp = (int)(upPart.position.x)/12;
+    //
+    //
+    //    int speedFactor = 32;
+    //    int speedFactor8th = speedFactor/8;
+    //
+    //    if (timer>=speed)
+    //    {
+    //        millisDown = ofGetElapsedTimeMillis();
+    //
+    //        triggerCounterDown++;
+    //        int _index = triggerCounterDown%speedFactor;
+    //        for (int i = 0; i<nElementLine; i++)
+    //        {
+    //
+    //            if (_index==((i*speedFactor8th)))
+    //            {
+    //                if ((elementDown[i].soundTrigger)&&downPart.bBeingClick)
+    //                {
+    //                    elementDown[i].onOffTrigger = true;
+    //                    elementDown[i].samplePlay.play();
+    //                    elementDown[i].samplePlay.setVolume( ofRandom(0.325,0.95) * downPart.soundVolume);
+    //                    elementDown[i].samplePlay.setSpeed( ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()/2, 3.0, 0) * ofRandom(0.75,1.25) );
+    //                }
+    //            }
+    //            else
+    //            {
+    //                elementDown[i].onOffTrigger = false;
+    //            }
+    //
+    //            if (_index==((i*speedFactor8th)+delayTempoLineUp%8))
+    //            {
+    //                if ((elementUp[i].soundTrigger)&&upPart.bBeingClick)
+    //                {
+    //                    elementUp[i].onOffTrigger = true;
+    //                    elementUp[i].samplePlay.play();
+    //                    elementUp[i].samplePlay.setVolume( ofRandom(0.325,0.95) * upPart.soundVolume);
+    //                    elementUp[i].samplePlay.setSpeed( ofMap(elementUp[i].pitchRectPos.y+ofGetHeight()/2, ofGetHeight()/2, 0, 3.0, 0) * ofRandom(0.75,1.25) );
+    //                }
+    //            }
+    //            else
+    //            {
+    //                elementUp[i].onOffTrigger = false;
+    //            }
+    //        }
+    //    }
     
     
-    int _speedFactor8th = 2;
-    int _index = counterBPM%16;
-    int _indexUp = counterBPMUp%16;
+    
+    
+    
+    
+    //    float timer = ofGetElapsedTimeMillis() - testSecond;
+    //
+    //    if(timer >= speedTempo && !bTimerReached) {
+    //        bTimerReached = true;
+    //    }
+    //
+    //    if (bTimerReached) {
+    //        testSecond = ofGetElapsedTimeMillis();
+    //        bTimerReached = false;
+    //        counterBPM++;
+    //        counterBPMUp++;
+    //
+    //        cout << counterBPM << endl;
+    //
+    //        int _speedFactor8th = 2;
+    //        int _indexDn = counterBPM%16;
+    //        int _indexUp = counterBPMUp%16;
+    //
+    //        for (int i = 0; i<nElementLine; i++) {
+    //            if (_indexDn==((i*_speedFactor8th))) {
+    //                if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
+    //                    float _volRandom = ofRandom(0.35,1.0);
+    //                    elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+    //                    //
+    //                    float _spdRandom = ofRandom(0.75,1.25);
+    //                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+    //                    float _value = _spdValueMap * _spdRandom;
+    //                    elementDown[i].samplePlay.setSpeed(_value);
+    //                    elementDown[i].samplePlay.play();
+    //                    bTimerReached=false;
+    //                }
+    //            }
+    //        }
+    //
+    //        for (int i = 0; i<nElementLine; i++) {
+    //            if (_indexUp==((i*_speedFactor8th)+delayupPart)) {
+    //                if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
+    //                    float _volRandom = ofRandom(0.35,1.0);
+    //                    elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+    //                    //
+    //                    float _spdRandom = ofRandom(0.75,1.25);
+    //                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+    //                    float _value = _spdValueMap * _spdRandom;
+    //                    elementUp[i].samplePlay.setSpeed(_value);
+    //                    elementUp[i].samplePlay.play();
+    //                }
+    //            }
+    //        }
+    //    }
+    
+    
+    
+    
+    //    if (bTimerReached) {
+    //        testSecond = ofGetElapsedTimeMillis();
+    //        testCounter++;
+    //        bTimerReached = false;
+    //
+    //        int _indexSample = testCounter%8;
+    //
+    //        if ((elementDown[_indexSample].soundTrigger)&&downPart.bBeingClick) {
+    //            float _volRandom = ofRandom(0.35,1.0);
+    //            elementDown[_indexSample].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+    //
+    //            float _spdRandom = ofRandom(0.75,1.25);
+    //            float _spdValueMap = ofMap(elementDown[_indexSample].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+    //            float _value = _spdValueMap;
+    //            elementDown[_indexSample].samplePlay.setSpeed(_value);
+    //            elementDown[_indexSample].samplePlay.play();
+    //            elementDown[_indexSample].onOffTrigger = true;
+    //        }
+    //
+    //    }
+    //
+    //
+    //    if (bTimerReachedUp) {
+    //        testSecondUp = ofGetElapsedTimeMillis()+75;
+    //        testCounterUp++;
+    //        bTimerReachedUp = false;
+    //
+    //        int _indexUpSample = testCounterUp%8;
+    //
+    //        if ((elementUp[_indexUpSample].soundTrigger)&&upPart.bBeingClick) {
+    //            float _volRandom = ofRandom(0.35,1.0);
+    //            elementUp[_indexUpSample].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+    //
+    //            float _spdRandom = ofRandom(0.75,1.25);
+    //            float _spdValueMap = ofMap(elementUp[_indexUpSample].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+    //            float _value = _spdValueMap;
+    //            elementUp[_indexUpSample].samplePlay.setSpeed(_value);
+    //            elementUp[_indexUpSample].samplePlay.play();
+    //            elementUp[_indexUpSample].onOffTrigger = true;
+    //        }
+    //
+    //    }
+    
+    
+    
+    int _speedFactor8th = 4;
+    int _index = counterBPM%32;
+    int _indexUp = counterBPMUp%32;
     
     for (int i = 0; i<nElementLine; i++) {
         if (_index==((i*_speedFactor8th))) {
@@ -286,8 +369,8 @@ void ofApp::update(){
     
     delayupPart = (int)(upPart.position.x)/24;
     
-//    speedTempo = ofMap(downPart.length/12, 0, 1024/12, 180, 60);
-    speedTempo = ofMap(downPart.length/12, 0, 1024/12, 55, 160);
+    speedTempo = ofMap(downPart.length/12, 0, 1024/12, 180, 60);
+    //    speedTempo = ofMap(downPart.length/12, 0, 1024/12, 55, 160);
     setTempoMilisecond = ofMap(downPart.length/12, 0, 1024/12, 20, 60);
     setBPM(speedTempo);
     
@@ -339,7 +422,7 @@ void ofApp::draw(){
     
     //    infomationWindow();
     //    touchGuideLine();
-//    ofDrawBitmapString(ofToString(ofGetFrameRate(),2), 10, 10);
+    //    ofDrawBitmapString(ofToString(ofGetFrameRate(),2), 10, 10);
     
 }
 
@@ -625,60 +708,71 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
 //--------------------------------------------------------------
 void ofApp::audioRequested(float *output, int bufferSize, int nChannels) {
     
+    //    synth.fillBufferOfFloats(output, bufferSize, nChannels);
     
-	for(int i = 0; i < bufferSize; i++) {
+    startBeatDetectedDn = false;
+	for(int i = 0; i < bufferSize*nChannels; i++) {
         pos++;
         if(fmod(pos,lengthOfOneBeatInSamples)==0) {
             startBeatDetectedDn=true;
             startBeatDetectedUp=true;
-//            counterBPM++;
-//            counterBPMUp++;
+            counterBPM++;
+            counterBPMUp++;
         }
     }
     
-//    int _speedFactor8th = 4;
-//    int _indexDn = counterBPM%32;
-//    int _indexUp = counterBPMUp%32;
-//    
-//    for (int i = 0; i<nElementLine; i++) {
-//        if (_indexDn==((i*_speedFactor8th))) {
-//            if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
-//                if (startBeatDetectedDn) {
-//                float _volRandom = ofRandom(0.35,1.0);
-//                elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-////
-////                float _spdRandom = ofRandom(0.75,1.25);
-//                float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-//                float _value = _spdValueMap;
-//                elementDown[i].samplePlay.setSpeed(_value);
-//                    elementDown[i].samplePlay.play();
-//                    startBeatDetectedDn=false;
-//
-//                }
-//            }
-//        }
-//    }
-//    
-//    for (int i = 0; i<nElementLine; i++) {
-//        if (_indexUp==((i*_speedFactor8th)+delayupPart)) {
-//            if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
-//                if (startBeatDetectedUp) {
-//                float _volRandom = ofRandom(0.35,1.0);
-//                elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-////
-////                float _spdRandom = ofRandom(0.75,1.25);
-//                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-//                float _value = _spdValueMap;
-//                elementUp[i].samplePlay.setSpeed(_value);
-//                    elementUp[i].samplePlay.play();
-//                    startBeatDetectedUp=false;
-//
-//                }
-//            }
-//        }
-//    }
+    int _speedFactor8th = 4;
+    int _indexDn = counterBPM%32;
+    int _indexUp = counterBPMUp%32;
+    
+    for (int i = 0; i<nElementLine; i++) {
+        if (_indexDn==((i*_speedFactor8th))) {
+            if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
+                if (startBeatDetectedDn) {
+                    float _volRandom = ofRandom(0.35,1.0);
+                    elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+                    //
+                    //                float _spdRandom = ofRandom(0.75,1.25);
+                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+                    float _value = _spdValueMap;
+                    elementDown[i].samplePlay.setSpeed(_value);
+                    elementDown[i].samplePlay.play();
+                    startBeatDetectedDn=false;
+                }
+            }
+        }
+    }
+    
+    for (int i = 0; i<nElementLine; i++) {
+        if (_indexUp==((i*_speedFactor8th)+delayupPart*2)) {
+            if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
+                if (startBeatDetectedUp) {
+                    float _volRandom = ofRandom(0.35,1.0);
+                    elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+                    //
+                    //                float _spdRandom = ofRandom(0.75,1.25);
+                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+                    float _value = _spdValueMap;
+                    elementUp[i].samplePlay.setSpeed(_value);
+                    elementUp[i].samplePlay.play();
+                    startBeatDetectedUp=false;
+                    
+                }
+            }
+        }
+    }
     
 }
+
+//--------------------------------------------------------------
+void ofApp::setBPM(float targetBPM) {
+    
+	lengthOfOneBeatInSamples = (int)((sampleRate*60.0f)/(targetBPM*4));
+	BPM=(sampleRate*60.0f)/lengthOfOneBeatInSamples;
+    
+}
+
+
 
 
 //--------------------------------------------------------------
@@ -730,11 +824,15 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
 }
 
 
-//--------------------------------------------------------------
-void ofApp::setBPM(float targetBPM) {
+void ofApp::receiveTrigger(float &note){
     
-	lengthOfOneBeatInSamples = (int)((sampleRate*60.0f)/(targetBPM));
-	BPM=(sampleRate*60.0f)/lengthOfOneBeatInSamples;
+    noteView = note;
+    
+}
+
+void ofApp::receiveTrigger2(float &note){
+    
+    noteView2 = note;
     
 }
 
@@ -941,5 +1039,108 @@ void ofApp::gotMemoryWarning(){
 
 //--------------------------------------------------------------
 void ofApp::deviceOrientationChanged(int newOrientation){
+    
+}
+
+
+void ofApp::tonicSetting(){
+    
+    // Tonic
+    const int NUM_STEPS = 8;
+    
+    // synth paramters are like instance variables -- they're values you can set later, by
+    // cally synth.setParameter()
+    ControlGenerator bpm = synth.addParameter("tempo",80).min(50).max(300);
+    ControlGenerator transpose = synth.addParameter("transpose", 0).min(-6).max(6);
+    
+    // ControlMetro generates a "trigger" message at a given bpm. We multiply it by four because we
+    // want four 16th notes for every beat
+    ControlGenerator metro = ControlMetro().bpm(4 * bpm);
+    ControlGenerator metro2 = ControlMetro().bpm(4 * bpm);
+    
+    // ControlStepper increments a value every time it's triggered, and then starts at the beginning again
+    // Here, we're using it to move forward in the sequence
+    ControlGenerator step = ControlStepper().end(NUM_STEPS).trigger(metro);
+    //    ControlGenerator step2 = ControlStepper().end(NUM_STEPS+1).trigger(metro2);
+    ControlGenerator step2 = ControlStepper().end(NUM_STEPS).trigger(metro2);
+    ControlCounter count = ControlCounter().end(7).trigger(metro);
+    ControlCounter count2 = ControlCounter().end(7).trigger(metro2);
+    // ControlSwitcher holds a list of ControlGenerators, and routes whichever one the inputIndex is pointing
+    // to to its output.
+    ControlSwitcher pitches = ControlSwitcher().inputIndex(step);
+    ControlSwitcher cutoffs = ControlSwitcher().inputIndex(step);
+    ControlSwitcher glides = ControlSwitcher().inputIndex(step);
+    
+    
+    // stick a bunch of random values into the pitch and cutoff lists
+    for(int i = 0; i < NUM_STEPS; i++){
+        ControlGenerator pitchForThisStep = synth.addParameter("step" + INT_TO_STRING(i) + "Pitch", randomFloat(10, 80)).min(10).max(80);
+        pitches.addInput(pitchForThisStep);
+        
+        ControlGenerator cutoff = synth.addParameter("step" + INT_TO_STRING(i) + "Cutoff", 500).min(30).max(1500);
+        cutoffs.addInput(cutoff);
+        
+        ControlGenerator glide = synth.addParameter("step" + INT_TO_STRING(i) + "Glide", 0).min(0).max(0.1);
+        glides.addInput(glide);
+    }
+    
+    
+    ControlSwitcher pitches2 = ControlSwitcher().inputIndex(step2);
+    ControlSwitcher cutoffs2 = ControlSwitcher().inputIndex(step2);
+    ControlSwitcher glides2 = ControlSwitcher().inputIndex(step2);
+    
+    // stick a bunch of random values into the pitch and cutoff lists
+    for(int i = 0; i < NUM_STEPS; i++){
+        ControlGenerator pitchForThisStep = synth.addParameter("step" + INT_TO_STRING(i) + "Pitch", randomFloat(10, 80)).min(10).max(80);
+        pitches2.addInput(pitchForThisStep);
+        
+        ControlGenerator cutoff = synth.addParameter("step" + INT_TO_STRING(i) + "Cutoff", 500).min(30).max(1500);
+        cutoffs2.addInput(cutoff);
+        
+        ControlGenerator glide = synth.addParameter("step" + INT_TO_STRING(i) + "Glide", 0).min(0).max(0.1);
+        glides2.addInput(glide);
+    }
+    
+    // Define a scale according to steps in a 12-note octave. This is a pentatonic scale. Like using
+    // just the black keys on a piano
+    vector<float> scale;
+    scale.push_back(0);
+    scale.push_back(2);
+    scale.push_back(3);
+    scale.push_back(5);
+    scale.push_back(7);
+    scale.push_back(10);
+    
+    // ControlSnapToScale snaps a float value to the nearest scale value, no matter what octave its in
+    ControlGenerator midiNote = transpose + ControlSnapToScale().setScale(scale).input(pitches);
+    ControlGenerator midiNote2 = transpose + ControlSnapToScale().setScale(scale).input(pitches2);
+    
+    
+    
+    ControlGenerator frequencyInHertz = ControlMidiToFreq().input(midiNote);
+    
+    // now that we've done all that, we have a frequency signal that's changing 4x per beat
+    Generator tone = RectWave().freq( frequencyInHertz.smoothed().length(glides) );
+    
+    // create an amplitude signal with an ADSR envelope, and scale it down a little so it's not scary loud
+    Generator amplitude = ADSR(0.01, 0.1, 0,0).trigger(metro) * 0.0;
+    
+    // create a filter, and feed the cutoff sequence in to it
+    LPF24 filter =  LPF24().cutoff(cutoffs).Q(0.1);
+    filter.input(tone * amplitude);
+    
+    // rout the output of the filter to the synth's main output
+    synth.setOutputGen( filter );
+    
+    // build a slider for each parameter
+    vector<ControlParameter> synthParameters = synth.getParameters();
+    //    for(int i = 0; i < synthParameters.size(); i++){
+    //        sliders.push_back(ParameterSlider(synthParameters.at(i)));
+    //    }
+    
+    ofEvent<float>* noteOut = synth.createOFEvent(count);
+    ofAddListener(* noteOut, this, &ofApp::receiveTrigger);
+    ofEvent<float>* noteOut2 = synth.createOFEvent(count2);
+    ofAddListener(* noteOut2, this, &ofApp::receiveTrigger2);
     
 }
