@@ -11,13 +11,15 @@
 
 
 //--------------------------
-//ThreadedObject::ThreadedObject(){
+ThreadedObject::ThreadedObject(){
 //    count = 0;
-//}
+}
 
-//void ThreadedObject::setup(){
-//    
-//}
+void ThreadedObject::setup(){
+    
+//    samplePlayer0.loadSound("tap_01.wav");
+    
+}
 //
 //void ThreadedObject::start(){
 //    startThread();   // blocking, verbose
@@ -63,6 +65,8 @@ void ThreadedObject::threadedFunction(){
                 // Reset count
                 notes = 0;
                 
+//                samplePlayer0.play();
+                
             }
             
             // Sleep for duration of one note
@@ -70,6 +74,12 @@ void ThreadedObject::threadedFunction(){
         }
     }
 }
+
+//void ThreadedObject::audioOut(float * output, int bufferSize, int nChannels){
+//    
+//	
+//}
+
 
 ////--------------------------
 //void ThreadedObject::draw(){

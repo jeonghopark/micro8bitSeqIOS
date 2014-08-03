@@ -157,7 +157,7 @@ class ofApp : public ofxiOSApp{
     float randomY[16];
     
     int controlPointSize;
-
+    int delayTempoLineUp;
     
 //    ThreadedObject TO;
 //    int toCounter;
@@ -171,6 +171,9 @@ class ofApp : public ofxiOSApp{
     bool testOnOf;
     
     int thredCounter;
+    int _indexCounterDn;
+    int _indexCounterUp;
+
 
 };
 

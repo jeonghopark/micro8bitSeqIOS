@@ -10,9 +10,9 @@ class ThreadedObject : public ofThread
     
 public:
     
-//    ThreadedObject();
+    ThreadedObject();
     
-//    void setup();
+    void setup();
 //    void start();
     void start(ofApp* p);
     void stop();
@@ -35,5 +35,7 @@ public:
     
     ofApp* parent;
 
-
+//    void audioOut(float * output, int bufferSize, int nChannels);
+//    ofSoundPlayer samplePlayer0;
+    
 };
