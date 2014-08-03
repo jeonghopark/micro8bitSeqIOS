@@ -6,7 +6,7 @@
 #include "WavFile.h"
 
 #include "ofxTonic.h"
-#include "ofxMaxim.h"
+#include "BasicSampler.h"
 
 using namespace Tonic;
 
@@ -69,6 +69,17 @@ typedef struct
     
 }
 controlTempoLine;
+
+
+struct UpElementNote {
+    stk::StkFloat elementNumber;
+    long voiceTag;
+};
+
+struct DnElementNote {
+    stk::StkFloat elementNumber;
+    long voiceTag;
+};
 
 
 class ofApp : public ofxiOSApp{
@@ -221,11 +232,14 @@ public:
     
     void tonicSetting();
 
-    maxiSample sampleMaxim;
-    maxiMix outputTwoChannel;
-    double wave;
-    double outputTwoChannels[2];
 
+    // STK
+    stk::Voicer *voicer;
+    UpElementNote u0,u1,u2,u3,u4,u5,u6,u7;
+    UpElementNote uE[8];
+    DnElementNote d0,d1,d2,d3,d4,d5,d6,d7;
+    DnElementNote dE[8];
+    
 };
 
 

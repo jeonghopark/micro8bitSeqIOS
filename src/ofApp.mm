@@ -20,6 +20,15 @@ void ofApp::setup(){
     backgroundColorHue = ofRandom(0,255);
     ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
     
+    // STK
+    voicer = new stk::Voicer(3.0);
+    for (int i = 0; i < 8 ; i++) {
+        BasicSampler *sampler = new BasicSampler();
+        voicer->addInstrument(sampler);
+//        voicer->setFrequency(1);
+    }
+    
+    
     initialBufferSize = 1024;
     sampleRate = 44100;
     drawCounter = 0;
@@ -143,8 +152,6 @@ void ofApp::setup(){
     setTempoMilisecond = ofGetElapsedTimeMillis();
     
     tonicSetting();
-
-    sampleMaxim.load(ofToDataPath("tap_01.wav"));
     
 }
 
@@ -153,32 +160,74 @@ void ofApp::update(){
     
     ofSoundUpdate();
     
-    //    cout << noteView << endl;
-    //    cout << noteView2 << endl;
-    //
-    //    if ((oldNote != noteView)) {
-    //        elementDown[noteView].samplePlay.play();
-    //        float _volRandom = ofRandom(0.35,1.0);
-    //        elementDown[noteView].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-    //        //
-    //        float _spdRandom = ofRandom(0.75,1.25);
-    //        float _spdValueMap = ofMap(elementDown[noteView].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-    //        float _value = _spdValueMap * _spdRandom;
-    //        elementDown[noteView].samplePlay.setSpeed(_value);
-    //        oldNote = noteView;
-    //    }
-    //
-    //    if ((oldNote2 != noteView2)) {
-    //        elementUp[noteView2].samplePlay.play();
-    //        float _volRandom = ofRandom(0.35,1.0);
-    //        elementUp[noteView2].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-    //        //
-    //        float _spdRandom = ofRandom(0.75,1.25);
-    //        float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[noteView2].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-    //        float _value = _spdValueMap * _spdRandom;
-    //        elementUp[noteView2].samplePlay.setSpeed(_value);
-    //        oldNote2 = noteView2;
-    //    }
+    
+    if ((oldNote != noteView)) {
+        cout << noteView << endl;
+        
+        
+//        elementDown[noteView].samplePlay.play();
+//        float _volRandom = ofRandom(0.35,1.0);
+//        elementDown[noteView].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+//        //
+//        float _spdRandom = ofRandom(0.75,1.25);
+//        float _spdValueMap = ofMap(elementDown[noteView].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+//        float _value = _spdValueMap * _spdRandom;
+//        elementDown[noteView].samplePlay.setSpeed(_value);
+        
+        if (downPart.bBeingClick) {
+            float _minR = 60;
+            float _maxR = 68;
+            if ((elementDown[0].soundTrigger)&&(noteView==0)) {
+                d0.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d1.voiceTag, 100);
+            }
+            if ((elementDown[1].soundTrigger)&&(noteView==1)) {
+                d1.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d2.voiceTag, 100);
+            }
+            if ((elementDown[2].soundTrigger)&&(noteView==2)) {
+                d2.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d3.voiceTag, 100);
+            }
+            if ((elementDown[3].soundTrigger)&&(noteView==3)) {
+                d3.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d4.voiceTag, 100);
+            }
+            if ((elementDown[4].soundTrigger)&&(noteView==4)) {
+                d4.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d5.voiceTag, 100);
+            }
+            if ((elementDown[5].soundTrigger)&&(noteView==5)) {
+                d5.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d6.voiceTag, 100);
+            }
+            if ((elementDown[6].soundTrigger)&&(noteView==6)) {
+                d6.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d7.voiceTag, 100);
+            }
+            if ((elementDown[7].soundTrigger)&&(noteView==7)) {
+                d7.voiceTag = voicer->noteOn(ofRandom(0,127),100);
+                voicer->noteOff(d0.voiceTag, 100);
+            }
+        }
+        
+        oldNote = noteView;
+    }
+    
+    if ((oldNote2 != noteView2)) {
+        
+        cout << noteView2 << endl;
+        
+        //        elementUp[noteView2].samplePlay.play();
+        //        float _volRandom = ofRandom(0.35,1.0);
+        //        elementUp[noteView2].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+        //        //
+        //        float _spdRandom = ofRandom(0.75,1.25);
+        //        float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[noteView2].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+        //        float _value = _spdValueMap * _spdRandom;
+        //        elementUp[noteView2].samplePlay.setSpeed(_value);
+        oldNote2 = noteView2;
+    }
     
     //    float speed = downPart.length/12;
     //    float timer = (ofGetElapsedTimeMillis()-millisDown)*1.0;
@@ -708,67 +757,67 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
 //--------------------------------------------------------------
 void ofApp::audioRequested(float *output, int bufferSize, int nChannels) {
     
-    //    synth.fillBufferOfFloats(output, bufferSize, nChannels);
+    synth.fillBufferOfFloats(output, bufferSize, nChannels);
     
-//    startBeatDetectedDn = false;
-//	for(int i = 0; i < bufferSize*nChannels; i++) {
-//        pos++;
-//        if(fmod(pos,lengthOfOneBeatInSamples)==0) {
-//            startBeatDetectedDn=true;
-//            startBeatDetectedUp=true;
-//            counterBPM++;
-//            counterBPMUp++;
-//        }
-//    }
+    for (int i = 0; i < bufferSize ; i++) {
+        float value = voicer->tick();
+        output[2*i] = value;
+        output[2*i+1] = value;
+    }
     
-    for (int i = 0; i < bufferSize; i++){
-        wave = sampleMaxim.play(1, 0, 44100);//simple as that!
-		outputTwoChannel.stereo(wave, outputTwoChannels, 0.5);
-		output[i*nChannels    ] = outputTwoChannels[0];
-		output[i*nChannels + 1] = outputTwoChannels[1];
-	}
-
     
-//    int _speedFactor8th = 4;
-//    int _indexDn = counterBPM%32;
-//    int _indexUp = counterBPMUp%32;
-//    
-//    for (int i = 0; i<nElementLine; i++) {
-//        if (_indexDn==((i*_speedFactor8th))) {
-//            if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
-//                if (startBeatDetectedDn) {
-//                    float _volRandom = ofRandom(0.35,1.0);
-//                    elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-//                    //
-//                    //                float _spdRandom = ofRandom(0.75,1.25);
-//                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-//                    float _value = _spdValueMap;
-//                    elementDown[i].samplePlay.setSpeed(_value);
-//                    elementDown[i].samplePlay.play();
-//                    startBeatDetectedDn=false;
-//                }
-//            }
-//        }
-//    }
-//    
-//    for (int i = 0; i<nElementLine; i++) {
-//        if (_indexUp==((i*_speedFactor8th)+delayupPart*2)) {
-//            if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
-//                if (startBeatDetectedUp) {
-//                    float _volRandom = ofRandom(0.35,1.0);
-//                    elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-//                    //
-//                    //                float _spdRandom = ofRandom(0.75,1.25);
-//                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-//                    float _value = _spdValueMap;
-//                    elementUp[i].samplePlay.setSpeed(_value);
-//                    elementUp[i].samplePlay.play();
-//                    startBeatDetectedUp=false;
-//                    
-//                }
-//            }
-//        }
-//    }
+    //    startBeatDetectedDn = false;
+    //	for(int i = 0; i < bufferSize*nChannels; i++) {
+    //        pos++;
+    //        if(fmod(pos,lengthOfOneBeatInSamples)==0) {
+    //            startBeatDetectedDn=true;
+    //            startBeatDetectedUp=true;
+    //            counterBPM++;
+    //            counterBPMUp++;
+    //        }
+    //    }
+    
+    
+    //    int _speedFactor8th = 4;
+    //    int _indexDn = counterBPM%32;
+    //    int _indexUp = counterBPMUp%32;
+    //
+    //    for (int i = 0; i<nElementLine; i++) {
+    //        if (_indexDn==((i*_speedFactor8th))) {
+    //            if ((elementDown[i].soundTrigger)&&downPart.bBeingClick) {
+    //                if (startBeatDetectedDn) {
+    //                    float _volRandom = ofRandom(0.35,1.0);
+    //                    elementDown[i].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+    //                    //
+    //                    //                float _spdRandom = ofRandom(0.75,1.25);
+    //                    float _spdValueMap = ofMap(elementDown[i].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+    //                    float _value = _spdValueMap;
+    //                    elementDown[i].samplePlay.setSpeed(_value);
+    //                    elementDown[i].samplePlay.play();
+    //                    startBeatDetectedDn=false;
+    //                }
+    //            }
+    //        }
+    //    }
+    //
+    //    for (int i = 0; i<nElementLine; i++) {
+    //        if (_indexUp==((i*_speedFactor8th)+delayupPart*2)) {
+    //            if ((elementUp[i].soundTrigger)&&upPart.bBeingClick) {
+    //                if (startBeatDetectedUp) {
+    //                    float _volRandom = ofRandom(0.35,1.0);
+    //                    elementUp[i].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+    //                    //
+    //                    //                float _spdRandom = ofRandom(0.75,1.25);
+    //                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[i].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+    //                    float _value = _spdValueMap;
+    //                    elementUp[i].samplePlay.setSpeed(_value);
+    //                    elementUp[i].samplePlay.play();
+    //                    startBeatDetectedUp=false;
+    //
+    //                }
+    //            }
+    //        }
+    //    }
     
 }
 
