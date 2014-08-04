@@ -14,7 +14,6 @@ typedef struct
 	bool 	bBeingClick;
 	bool 	bLengthOver;
 	bool 	bOnOffOver;
-	float 	width;
     ofVec2f onOffRectPos;
     ofVec2f pitchRectPos;
     bool onOffTrigger;
@@ -28,12 +27,10 @@ controlElementLine;
 typedef struct
 {
 	ofVec2f position;
-	ofVec2f oldPosition;
 	bool 	bLengthBeingDragged;
 	bool 	bBeingClick;
 	bool 	bLengthOver;
 	bool 	bOnOffOver;
-	float 	width;
     ofVec2f onOffRectPos;
     ofVec2f lengthRectPos;
     float length;
@@ -56,7 +53,6 @@ typedef struct
     float soundVolume;
     
     ofVec2f changeSamplePos;
-    float changeSampleSize;
     bool bChangeSampleClick;
     bool bChangeSampleOver;
     int changeSampleIndex;
@@ -103,7 +99,6 @@ public:
     int	initialBufferSize;
 	int	sampleRate;
 	int	drawCounter;
-    int bufferCounter;
 	float * buffer;
     
     int nElementLine;
@@ -127,7 +122,6 @@ public:
     float recBlockSize;
     
     ofDirectory dir;
-    vector<ofSoundPlayer> soundsList;
     
     void drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos);
     
@@ -160,7 +154,30 @@ public:
     int indexCounterDn;
     int indexCounterUp;
     
+    // sample change
+    void sampleChange();
     
+    // Menu
+    void menuDraw();
+    void menuSetting();
+    ofRectangle sampleChangeUp;
+    ofRectangle sampleChangeDn;
+    ofRectangle mainMenu;
+    bool sampleChangeUpMenu;
+    bool sampleChangeDnMenu;
+    bool mainStopStart;
+    int mainTempo;
+    
+    //tempo
+    float maxLine;
+    float minLine;
+    float maxTempo;
+    float minTempo;
+    
+    
+    float minRecordRectPosX;
+    
+    float sampleRecordingTime;
 };
 
 

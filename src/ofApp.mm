@@ -5,7 +5,7 @@ void ofApp::setup(){
     ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     ofEnableAlphaBlending();
     ofSetCircleResolution(24);
-
+    
     ofSetFrameRate(60);
     
     ofxAccelerometer.setup();
@@ -17,7 +17,6 @@ void ofApp::setup(){
     initialBufferSize = 256;
     sampleRate = 44100;
     drawCounter = 0;
-    bufferCounter = 0;
     buffer = new float[initialBufferSize];
     memset(buffer, 0, initialBufferSize * sizeof(float));
     
@@ -25,15 +24,9 @@ void ofApp::setup(){
     
     dir.listDir("sounds/samples/");
     dir.sort();
-//    if( dir.size() ){
-//        soundsList.assign(dir.size(), ofSoundPlayer());
-//    }
-//    for(int i = 0; i < (int)dir.size(); i++){
-//        soundsList[i].loadSound(dir.getPath(i));
-//    }
     
-    fileNameUp = "tap_02.caf";
-    fileNameDown = "tap_01.caf";
+    fileNameUp = "sounds/samples/tap_02.wav";
+    fileNameDown = "sounds/samples/tap_01.wav";
     sampleMainVolume = 0.85;
     
     startTime = ofGetElapsedTimeMillis();
@@ -41,6 +34,11 @@ void ofApp::setup(){
     soundRecordingDownOn = true;
     
     controlRectSize = 22;
+    
+    sampleRecordingTime = 500;
+
+    mainStopStart = true;
+    mainTempo = 1;
     
     for (int i=0; i<16; i++) {
         randomY[i] = ofRandom(55,ofGetHeight()*2/5);
@@ -52,7 +50,7 @@ void ofApp::setup(){
     downPart.bDownSoundRecordClick = true;
     downPart.bChangeSampleClick = false;
     downPart.bChangeSampleOver = false;
-    downPart.startTime = ofGetElapsedTimeMillis() - 1000;
+    downPart.startTime = ofGetElapsedTimeMillis() - sampleRecordingTime;
     downPart.rectBlockAlphaFactor = 0;
     downPart.recordState=0;
     downPart.soundVolume = 1;
@@ -60,7 +58,6 @@ void ofApp::setup(){
     downPart.myWavWriter.setFormat(1, sampleRate, 16);
     downPart.onOffRectPos.x = -downPart.length*0.5 + ofGetWidth()*0.5;
     downPart.lengthRectPos.x = downPart.length*0.5 + ofGetWidth()*0.5;
-    downPart.changeSampleSize = 60;
     
     upPart.length = downPart.length;
     upPart.bBeingClick = true;
@@ -68,7 +65,7 @@ void ofApp::setup(){
     upPart.bDownSoundRecordClick = true;
     upPart.bChangeSampleClick = false;
     upPart.bChangeSampleOver = false;
-    upPart.startTime = ofGetElapsedTimeMillis() - 1000;
+    upPart.startTime = ofGetElapsedTimeMillis() - sampleRecordingTime;
     upPart.rectBlockAlphaFactor = 0;
     upPart.recordState=0;
     upPart.soundVolume = 1;
@@ -76,7 +73,6 @@ void ofApp::setup(){
     upPart.myWavWriter.setFormat(1, sampleRate, 16);
     upPart.onOffRectPos.x = -upPart.length*0.5 + ofGetWidth()*0.5;
     upPart.lengthRectPos.x = upPart.length*0.5 + ofGetWidth()*0.5;
-    upPart.changeSampleSize = 60;
     
     upPart.position.x = upPart.lengthRectPos.x-downPart.lengthRectPos.x;
     upPart.delayPos.x = upPart.length*0.5 + ofGetWidth()*0.5 - upPart.length/(10*2);
@@ -88,7 +84,6 @@ void ofApp::setup(){
         elementDown[i].bLengthBeingDragged = false;
         elementDown[i].bBeingClick = false;
         elementDown[i].soundTrigger = true;
-        elementDown[i].samplePlay.setMultiPlay(true);
         elementDown[i].samplePlay.loadSound(fileNameDown);
         elementDown[i].samplePlay.setVolume(sampleMainVolume);
         elementDown[i].samplePlay.setLoop(false);
@@ -97,7 +92,6 @@ void ofApp::setup(){
                                           downPart.onOffRectPos.y);
         elementDown[i].pitchRectPos = ofVec2f(elementDown[i].position.x, elementDown[i].position.y+randomY[i]);
         elementDown[i].onOffRectPos = elementDown[i].pitchRectPos * ofVec2f(1,-1) + ofVec2f(0,ofGetHeight());
-        elementDown[i].width = controlRectSize;
         elementDown[i].triggerColor = 120;
         
         elementUp[i].bLengthOver = false;
@@ -105,7 +99,6 @@ void ofApp::setup(){
         elementUp[i].bLengthBeingDragged = false;
         elementUp[i].bBeingClick = false;
         elementUp[i].soundTrigger = true;
-        elementUp[i].samplePlay.setMultiPlay(true);
         elementUp[i].samplePlay.loadSound(fileNameUp);
         elementUp[i].samplePlay.setVolume(sampleMainVolume);
         elementUp[i].samplePlay.setLoop(false);
@@ -114,41 +107,55 @@ void ofApp::setup(){
                                         upPart.onOffRectPos.y);
         elementUp[i].pitchRectPos = ofVec2f(elementUp[i].position.x, elementUp[i].position.y-randomY[i+8]);
         elementUp[i].onOffRectPos = elementUp[i].pitchRectPos * ofVec2f(1,-1) + ofVec2f(0,ofGetHeight());
-        elementUp[i].width = controlRectSize;
         elementUp[i].triggerColor = 120;
     }
     
     rectSizeRatio = 0.5;
-
+    
     recBlockSize = initialBufferSize * 0.25;
     
-    tempo = ofMap(downPart.length/12, 24, 1024/12, 650, 250);
-
+    maxLine = 730;
+    minLine = 290;
+    maxTempo = 670;
+    minTempo = 300;
+    tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo);
+    
     threadedObject.notesPerPhrase = 1;
     threadedObject.start(this);
     
     thredCounter = 0;
+    
+    // menu
+    menuSetting();
+    
+    minRecordRectPosX = ofGetWidth()*0.1347;
+    
+    
 }
 
 void ofApp::update(){
     
     ofSoundUpdate();
-        
-    float _recBlockPosCh = recBlockSize * 0.5 + 10;
+    
+    float _recBlockPosCh = recBlockSize;
     downPart.recBlockPos = ofVec2f(downPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5+ofGetHeight()*0.1);
     downPart.changeSamplePos = ofVec2f(downPart.lengthRectPos.x, ofGetHeight()*0.5+ofGetHeight()*0.09);
     
-    upPart.recBlockPos = ofVec2f(upPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5-ofGetHeight()*0.1);
+    if (upPart.onOffRectPos.x>minRecordRectPosX) {
+        upPart.recBlockPos = ofVec2f(upPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5-ofGetHeight()*0.1);
+    } else {
+        upPart.recBlockPos = ofVec2f(minRecordRectPosX-_recBlockPosCh, ofGetHeight()*0.5-ofGetHeight()*0.1);
+    }
+    
     upPart.changeSamplePos = ofVec2f(upPart.lengthRectPos.x,ofGetHeight()*0.5-ofGetHeight()*0.09);
     
     downPart.length = downPart.lengthRectPos.x - downPart.onOffRectPos.x;
     downPart.onOffRectPos.x = -downPart.length*0.5 + ofGetWidth()*0.5;
     downPart.lengthRectPos.x = downPart.length*0.5 + ofGetWidth()*0.5;
-
+    
     delayupPart = (int)(upPart.position.x)/24;
     
-    tempo = ofMap(downPart.length/12, 24, 1024/12, 650, 250);
-    
+    tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo) * mainTempo;
     
     spacingLineDown = downPart.length / 10;
     spacingLineUp = downPart.length / 10;
@@ -175,7 +182,9 @@ void ofApp::update(){
     
     downPart.bDownSoundRecordPos = ofVec2f( downPart.recBlockPos.x, downPart.recBlockPos.y-(recBlockSize-1)*0.5 );
     upPart.bDownSoundRecordPos = ofVec2f( upPart.recBlockPos.x, upPart.recBlockPos.y-(recBlockSize-1)*0.5 );
-
+    
+    
+    
 }
 
 //--------------------------------------------------------------
@@ -183,49 +192,59 @@ void ofApp::phraseComplete(){
     
     thredCounter++;
     
+    if(thredCounter>15) {
+        thredCounter = 0;
+    }
+    
     if (thredCounter%2==0) {
-        indexCounterDn++;
+        if (mainStopStart) {
+            indexCounterDn++;
 
-        int _index = indexCounterDn%8;
-        
-        if ((elementDown[_index].soundTrigger)&&downPart.bBeingClick){
-            elementDown[_index].onOffTrigger = true;
-            elementDown[_index].samplePlay.play();
-            float _volRandom = ofRandom(0.35,1.0);
-            elementDown[_index].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+            int _index = indexCounterDn%8;
             
-            float _spdRandom = ofRandom(0.75,1.25);
-            float _spdValueMap = ofMap(elementDown[_index].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-            float _value = _spdValueMap;
-            elementDown[_index].samplePlay.setSpeed(_value);
+            if ((elementDown[_index].soundTrigger)&&downPart.bBeingClick){
+                elementDown[_index].onOffTrigger = true;
+                elementDown[_index].samplePlay.play();
+                float _volRandom = ofRandom(0.35,1.0);
+                elementDown[_index].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+                
+                float _spdRandom = ofRandom(0.75,1.25);
+                float _spdValueMap = ofMap(elementDown[_index].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+                float _value = _spdValueMap;
+                elementDown[_index].samplePlay.setSpeed(_value);
+            }
         }
-
+        
     }
     
     
     if ((thredCounter+delayupPart)%2==0) {
-        indexCounterUp++;
-
-        int _index = indexCounterDn%8;
-
-        if ((elementUp[_index].soundTrigger)&&upPart.bBeingClick){
-            elementUp[_index].onOffTrigger = true;
-            elementUp[_index].samplePlay.play();
-            float _volRandom = ofRandom(0.35,1.0);
-            elementUp[_index].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+        if (mainStopStart) {
+            indexCounterUp++;
+        
+            int _index = indexCounterDn%8;
             
-            float _spdRandom = ofRandom(0.75,1.25);
-            float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[_index].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-            float _value = _spdValueMap;
-            elementUp[_index].samplePlay.setSpeed(_value);
+            if ((elementUp[_index].soundTrigger)&&upPart.bBeingClick){
+                elementUp[_index].onOffTrigger = true;
+                elementUp[_index].samplePlay.play();
+                float _volRandom = ofRandom(0.35,1.0);
+                elementUp[_index].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+                
+                float _spdRandom = ofRandom(0.75,1.25);
+                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[_index].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+                float _value = _spdValueMap;
+                elementUp[_index].samplePlay.setSpeed(_value);
+            }
         }
     }
-
+    
 }
 
 //--------------------------------------------------------------
 int ofApp::calculateNoteDuration() {
+    
     return (int)floor(60000.0000f / tempo);
+    
 }
 
 
@@ -246,6 +265,8 @@ void ofApp::draw(){
     //    fadeInBackground();
     //    touchGuideLine();
     //    ofDrawBitmapString(ofToString(ofGetFrameRate(),2), 10, 10);
+    
+    menuDraw();
     
 }
 
@@ -485,7 +506,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     ofPopMatrix();
     
     if (_vP.y == downPart.recBlockPos.y){
-        downPart.recordingTime = 1000;
+        downPart.recordingTime = sampleRecordingTime;
         downPart.timeStamp = ofGetElapsedTimeMillis() - downPart.startTime;
         
         if ((downPart.timeStamp<downPart.recordingTime)){
@@ -503,7 +524,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
             downPart.bDownSoundRecordClick = true;
         }
     } else {
-        upPart.recordingTime = 1000;
+        upPart.recordingTime = sampleRecordingTime;
         upPart.timeStamp = ofGetElapsedTimeMillis() - upPart.startTime;
         
         if ((upPart.timeStamp<upPart.recordingTime)){
@@ -521,8 +542,6 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
             upPart.bDownSoundRecordClick = true;
         }
     }
-    
-    
     
 }
 
@@ -542,7 +561,6 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++){
         buffer[i] = input[i];
     }
-    bufferCounter++;
     
     if ((downPart.recordState==1)&&(soundRecordingDownOn)){
         downPart.recordState=3;
@@ -606,8 +624,96 @@ bool ofApp::onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b){
 }
 
 
+//--------------------------------------------------------------
+void ofApp::menuDraw(){
+    
+    ofPushMatrix();
+    ofPushStyle();
+    
+    ofSetColor(ofColor::fromHsb(0,0,230,120));
+    
+    ofNoFill();
+    
+    
+    ofPushStyle();
+    if (sampleChangeUpMenu) {
+        ofSetColor(ofColor::fromHsb(0,0,230,70));
+        ofFill();
+        ofRect(sampleChangeUp);
+        sampleChangeUpMenu = false;
+    }
+    ofRect(sampleChangeUp);
+    ofPopStyle();
+    
+    ofPushStyle();
+    if (sampleChangeDnMenu) {
+        ofSetColor(ofColor::fromHsb(0,0,230,70));
+        ofFill();
+        ofRect(sampleChangeDn);
+        sampleChangeDnMenu = false;
+    }
+    ofRect(sampleChangeDn);
+    ofPopStyle();
+    
+    ofPopStyle();
+    ofPopMatrix();
+    
+    
+    ofPushStyle();
+
+    if (mainStopStart) {
+        mainStopStart = 1;
+    } else {
+        mainStopStart = 0;
+        thredCounter = -1;
+        indexCounterDn = -1;
+        indexCounterUp = -1;
+        ofFill();
+        ofSetColor(ofColor::fromHsb(0,0,230,40));
+        ofRect(mainMenu);
+    }
+
+    ofNoFill();
+    ofSetColor(ofColor::fromHsb(0,0,230,120));
+    ofRect(mainMenu);
+    ofPopStyle();
+
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::menuSetting(){
+    
+    int _width = 40;
+    int _spacing = 10;
+    
+    int _mainHeight = 300;
+    
+    mainMenu.set(_spacing, ofGetHeight()*0.5-_mainHeight*0.5, _width, _mainHeight);
+    
+    sampleChangeUp.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5-_mainHeight*0.5-_spacing*0.5,
+                       _width, _mainHeight*0.5-_spacing*0.5);
+    sampleChangeDn.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5+_spacing*0.5,
+                       _width, _mainHeight*0.5-_spacing*0.5);
+    
+}
+
+
+//--------------------------------------------------------------
+void ofApp::sampleChange(){
+    
+}
+
+
+
+//--------------------------------------------------------------
 void ofApp::exit(){
     
+    for (int i = 0; i<nElementLine; i++){
+        elementDown[i].samplePlay.unloadSound();
+        elementUp[i].samplePlay.unloadSound();
+    }
+
 }
 
 
@@ -689,8 +795,8 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
         if (touch.x<657) {
             touch.x = 657;
         }
-        if (touch.x>ofGetWidth()-ofGetWidth()*0.11){
-            touch.x = ofGetWidth()-ofGetWidth()*0.11;
+        if (touch.x>ofGetWidth()-ofGetWidth()*0.144){
+            touch.x = ofGetWidth()-ofGetWidth()*0.144;
         }
         downPart.lengthRectPos.x = touch.x;
     }
@@ -709,7 +815,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 
 //--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs & touch){
-
+    
 }
 
 
@@ -717,37 +823,39 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     
     ofVec2f _input = ofVec2f(touch.x, touch.y);
-    if (touch.x>ofGetWidth()-70) {
-        downPart.bChangeSampleClick = onOffOut(_input, downPart.changeSamplePos, 30, downPart.bChangeSampleClick);
-        upPart.bChangeSampleClick = onOffOut(_input, upPart.changeSamplePos, 30, upPart.bChangeSampleClick);
-        
-        if (touch.y>ofGetHeight()*0.5) {
-            downPart.bChangeSampleClick = true;
+    
+    if (sampleChangeDn.inside(_input)) {
+        downPart.bChangeSampleClick = true;
+        sampleChangeDnMenu = true;
+    }
+    
+    if (sampleChangeUp.inside(_input)) {
+        upPart.bChangeSampleClick = true;
+        sampleChangeUpMenu = true;
+    }
+    
+    if (upPart.bChangeSampleClick){
+        upPart.changeSampleIndex++;
+        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
+        for (int i = 0; i<nElementLine; i++){
+            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
+            elementUp[i].samplePlay.loadSound(fileNameUp);
         }
-        
-        if (touch.y<ofGetHeight()*0.5) {
-            upPart.bChangeSampleClick = true;
+        upPart.bChangeSampleClick = false;
+    }
+    
+    if (downPart.bChangeSampleClick){
+        downPart.changeSampleIndex++;
+        downPart.changeSampleIndex = downPart.changeSampleIndex%dir.size();
+        for (int i = 0; i<nElementLine; i++){
+            string fileNameDown = "sounds/samples/" + dir.getName(downPart.changeSampleIndex);
+            elementDown[i].samplePlay.loadSound(fileNameDown);
         }
-        
-        if (upPart.bChangeSampleClick){
-            upPart.changeSampleIndex++;
-            upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
-            for (int i = 0; i<nElementLine; i++){
-                string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
-                elementUp[i].samplePlay.loadSound(fileNameUp);
-            }
-            upPart.bChangeSampleClick = !upPart.bChangeSampleClick;
-        }
-        
-        if (downPart.bChangeSampleClick){
-            downPart.changeSampleIndex++;
-            downPart.changeSampleIndex = downPart.changeSampleIndex%dir.size();
-            for (int i = 0; i<nElementLine; i++){
-                string fileNameDown = "sounds/samples/" + dir.getName(downPart.changeSampleIndex);
-                elementDown[i].samplePlay.loadSound(fileNameDown);
-            }
-            downPart.bChangeSampleClick = !downPart.bChangeSampleClick;
-        }
+        downPart.bChangeSampleClick = false;
+    }
+    
+    if (mainMenu.inside(_input)) {
+        mainStopStart = !mainStopStart;
     }
     
 }
