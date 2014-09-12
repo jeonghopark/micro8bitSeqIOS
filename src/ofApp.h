@@ -154,6 +154,9 @@ public:
     int indexCounterDn;
     int indexCounterUp;
     
+    int upIndex;
+    int dnIndex;
+    
     // sample change
     void sampleChange();
     
@@ -174,10 +177,10 @@ public:
     float maxTempo;
     float minTempo;
     
-    
     float minRecordRectPosX;
-    
     float sampleRecordingTime;
+    
+    
 };
 
 

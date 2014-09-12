@@ -33,7 +33,7 @@ void ofApp::setup(){
     
     soundRecordingDownOn = true;
     
-    controlRectSize = 22;
+    controlRectSize = 22 * 2;
     
     sampleRecordingTime = 500;
 
@@ -114,8 +114,8 @@ void ofApp::setup(){
     
     recBlockSize = initialBufferSize * 0.25;
     
-    maxLine = 730;
-    minLine = 290;
+    maxLine = 730*2;
+    minLine = 290*2;
     maxTempo = 670;
     minTempo = 300;
     tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo);
@@ -183,8 +183,6 @@ void ofApp::update(){
     downPart.bDownSoundRecordPos = ofVec2f( downPart.recBlockPos.x, downPart.recBlockPos.y-(recBlockSize-1)*0.5 );
     upPart.bDownSoundRecordPos = ofVec2f( upPart.recBlockPos.x, upPart.recBlockPos.y-(recBlockSize-1)*0.5 );
     
-    
-    
 }
 
 //--------------------------------------------------------------
@@ -200,18 +198,18 @@ void ofApp::phraseComplete(){
         if (mainStopStart) {
             indexCounterDn++;
 
-            int _index = indexCounterDn%8;
+            dnIndex = indexCounterDn%8;
             
-            if ((elementDown[_index].soundTrigger)&&downPart.bBeingClick){
-                elementDown[_index].onOffTrigger = true;
-                elementDown[_index].samplePlay.play();
+            if ((elementDown[dnIndex].soundTrigger)&&downPart.bBeingClick){
+                elementDown[dnIndex].onOffTrigger = true;
+                elementDown[dnIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
-                elementDown[_index].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
+                elementDown[dnIndex].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
                 
                 float _spdRandom = ofRandom(0.75,1.25);
-                float _spdValueMap = ofMap(elementDown[_index].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+                float _spdValueMap = ofMap(elementDown[dnIndex].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
                 float _value = _spdValueMap;
-                elementDown[_index].samplePlay.setSpeed(_value);
+                elementDown[dnIndex].samplePlay.setSpeed(_value);
             }
         }
         
@@ -222,18 +220,18 @@ void ofApp::phraseComplete(){
         if (mainStopStart) {
             indexCounterUp++;
         
-            int _index = indexCounterDn%8;
+            upIndex = indexCounterDn%8;
             
-            if ((elementUp[_index].soundTrigger)&&upPart.bBeingClick){
-                elementUp[_index].onOffTrigger = true;
-                elementUp[_index].samplePlay.play();
+            if ((elementUp[upIndex].soundTrigger)&&upPart.bBeingClick){
+                elementUp[upIndex].onOffTrigger = true;
+                elementUp[upIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
-                elementUp[_index].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+                elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
                 
                 float _spdRandom = ofRandom(0.75,1.25);
-                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[_index].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
                 float _value = _spdValueMap;
-                elementUp[_index].samplePlay.setSpeed(_value);
+                elementUp[upIndex].samplePlay.setSpeed(_value);
             }
         }
     }
@@ -634,7 +632,6 @@ void ofApp::menuDraw(){
     
     ofNoFill();
     
-    
     ofPushStyle();
     if (sampleChangeUpMenu) {
         ofSetColor(ofColor::fromHsb(0,0,230,70));
@@ -658,8 +655,23 @@ void ofApp::menuDraw(){
     ofPopStyle();
     ofPopMatrix();
     
-    
+
+    ofPushMatrix();
     ofPushStyle();
+
+    int _width = 40*2;
+    int _spacing = 10*2;
+
+    ofTranslate(_spacing + _width*0.5, ofGetHeight() * 0.5);
+    
+    int rotateOnOff = dnIndex%2;
+    if (rotateOnOff==0) {
+        ofRotateZ(0);
+    } else {
+        ofRotateZ(-45);
+    }
+    
+    ofTranslate(-_spacing - _width*0.5, -ofGetHeight() * 0.5);
 
     if (mainStopStart) {
         mainStopStart = 1;
@@ -677,6 +689,7 @@ void ofApp::menuDraw(){
     ofSetColor(ofColor::fromHsb(0,0,230,120));
     ofRect(mainMenu);
     ofPopStyle();
+    ofPopMatrix();
 
     
 }
@@ -684,17 +697,15 @@ void ofApp::menuDraw(){
 //--------------------------------------------------------------
 void ofApp::menuSetting(){
     
-    int _width = 40;
-    int _spacing = 10;
+    int _width = 40 * 2;
+    int _spacing = 10 * 2;
     
-    int _mainHeight = 300;
+    mainMenu.set(_spacing, ofGetHeight()*0.5-_width*0.5, _width, _width);
     
-    mainMenu.set(_spacing, ofGetHeight()*0.5-_mainHeight*0.5, _width, _mainHeight);
-    
-    sampleChangeUp.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5-_mainHeight*0.5-_spacing*0.5,
-                       _width, _mainHeight*0.5-_spacing*0.5);
+    sampleChangeUp.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5-_width-_spacing*0.5,
+                       _width, _width);
     sampleChangeDn.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5+_spacing*0.5,
-                       _width, _mainHeight*0.5-_spacing*0.5);
+                       _width, _width);
     
 }
 
@@ -755,6 +766,45 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
             elementUp[i].soundTrigger = onOffOut(_yUpInput, elementUp[i].onOffRectPos, controlRectSize, elementUp[i].soundTrigger);
         }
     }
+    
+    
+    
+    ofVec2f _inputSampleChange = ofVec2f(touch.x, touch.y);
+    
+    if (sampleChangeDn.inside(_inputSampleChange)) {
+        downPart.bChangeSampleClick = true;
+        sampleChangeDnMenu = true;
+    }
+    
+    if (sampleChangeUp.inside(_inputSampleChange)) {
+        upPart.bChangeSampleClick = true;
+        sampleChangeUpMenu = true;
+    }
+    
+    if (upPart.bChangeSampleClick){
+        upPart.changeSampleIndex++;
+        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
+        for (int i = 0; i<nElementLine; i++){
+            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
+            elementUp[i].samplePlay.loadSound(fileNameUp);
+        }
+        upPart.bChangeSampleClick = false;
+    }
+    
+    if (downPart.bChangeSampleClick){
+        downPart.changeSampleIndex++;
+        downPart.changeSampleIndex = downPart.changeSampleIndex%dir.size();
+        for (int i = 0; i<nElementLine; i++){
+            string fileNameDown = "sounds/samples/" + dir.getName(downPart.changeSampleIndex);
+            elementDown[i].samplePlay.loadSound(fileNameDown);
+        }
+        downPart.bChangeSampleClick = false;
+    }
+    
+    if (mainMenu.inside(_inputSampleChange)) {
+        mainStopStart = !mainStopStart;
+    }
+
     
 }
 
@@ -822,41 +872,6 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     
-    ofVec2f _input = ofVec2f(touch.x, touch.y);
-    
-    if (sampleChangeDn.inside(_input)) {
-        downPart.bChangeSampleClick = true;
-        sampleChangeDnMenu = true;
-    }
-    
-    if (sampleChangeUp.inside(_input)) {
-        upPart.bChangeSampleClick = true;
-        sampleChangeUpMenu = true;
-    }
-    
-    if (upPart.bChangeSampleClick){
-        upPart.changeSampleIndex++;
-        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
-        for (int i = 0; i<nElementLine; i++){
-            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
-            elementUp[i].samplePlay.loadSound(fileNameUp);
-        }
-        upPart.bChangeSampleClick = false;
-    }
-    
-    if (downPart.bChangeSampleClick){
-        downPart.changeSampleIndex++;
-        downPart.changeSampleIndex = downPart.changeSampleIndex%dir.size();
-        for (int i = 0; i<nElementLine; i++){
-            string fileNameDown = "sounds/samples/" + dir.getName(downPart.changeSampleIndex);
-            elementDown[i].samplePlay.loadSound(fileNameDown);
-        }
-        downPart.bChangeSampleClick = false;
-    }
-    
-    if (mainMenu.inside(_input)) {
-        mainStopStart = !mainStopStart;
-    }
     
 }
 
