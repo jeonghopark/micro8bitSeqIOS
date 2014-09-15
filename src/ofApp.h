@@ -181,6 +181,8 @@ public:
     float sampleRecordingTime;
     
     
+    float upIndexOldTimer;
+    
 };
 
 
