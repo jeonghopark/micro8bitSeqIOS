@@ -36,7 +36,7 @@ void ofApp::setup(){
     controlRectSize = 22 * 2;
     
     sampleRecordingTime = 500;
-
+    
     mainStopStart = true;
     mainTempo = 1;
     
@@ -197,7 +197,7 @@ void ofApp::phraseComplete(){
     if (thredCounter%2==0) {
         if (mainStopStart) {
             indexCounterDn++;
-
+            
             dnIndex = indexCounterDn%8;
             
             if ((elementDown[dnIndex].soundTrigger)&&downPart.bBeingClick){
@@ -211,7 +211,7 @@ void ofApp::phraseComplete(){
                 float _value = _spdValueMap;
                 elementDown[dnIndex].samplePlay.setSpeed(_value);
             }
-
+            
         }
         
     }
@@ -220,7 +220,7 @@ void ofApp::phraseComplete(){
     if ((thredCounter+delayupPart)%2==0) {
         if (mainStopStart) {
             indexCounterUp++;
-        
+            
             upIndex = indexCounterDn%8;
             
             if ((elementUp[upIndex].soundTrigger)&&upPart.bBeingClick){
@@ -283,43 +283,43 @@ void ofApp::downPartDraw(){
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
     
-        if (elementDown[dnIndex].onOffTrigger) {
-            if (!elementDown[dnIndex].bBeingClick) {
-                elementDown[dnIndex].triggerColor = 100;
-            } else {
-                elementDown[dnIndex].triggerColor = 0;
-            }
-            elementDown[dnIndex].onOffTrigger = false;
+    if (elementDown[dnIndex].onOffTrigger) {
+        if (!elementDown[dnIndex].bBeingClick) {
+            elementDown[dnIndex].triggerColor = 100;
         } else {
             elementDown[dnIndex].triggerColor = 0;
         }
-        
-        if (elementDown[dnIndex].soundTrigger&&downPart.bBeingClick) {
-            ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,200+elementDown[dnIndex].triggerColor));
-            ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
-                   elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio)*0.5);
-        } else {
-            ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,60+elementDown[dnIndex].triggerColor));
-            ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
-                   elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5));
-        }
-        
-        if (!elementDown[dnIndex].bBeingClick) {
-            ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,170+elementDown[dnIndex].triggerColor));
-        } else {
-            ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
-        }
-        ofRect(elementDown[dnIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
-        ofRect(elementDown[dnIndex].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
-        
+        elementDown[dnIndex].onOffTrigger = false;
+    } else {
+        elementDown[dnIndex].triggerColor = 0;
+    }
+    
+    if (elementDown[dnIndex].soundTrigger&&downPart.bBeingClick) {
+        ofFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,200+elementDown[dnIndex].triggerColor));
+        ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
+               elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio)*0.5);
+    } else {
+        ofNoFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,60+elementDown[dnIndex].triggerColor));
+        ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
+               elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5));
+    }
+    
+    if (!elementDown[dnIndex].bBeingClick) {
+        ofNoFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,170+elementDown[dnIndex].triggerColor));
+    } else {
+        ofFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
+    }
+    ofRect(elementDown[dnIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
+    ofRect(elementDown[dnIndex].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
+    
     
     
     ofPopStyle();
-
+    
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
     
@@ -327,22 +327,22 @@ void ofApp::downPartDraw(){
         
         if (elementDown[i].soundTrigger&&downPart.bBeingClick) {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[i].triggerColor,150+elementDown[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,150));
             ofLine(elementDown[i].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
                    elementDown[i].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio)*0.5);
         } else {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[i].triggerColor,60+elementDown[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,60));
             ofLine(elementDown[i].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
                    elementDown[i].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5));
         }
         
         if (!elementDown[i].bBeingClick) {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[i].triggerColor,120+elementDown[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,120));
         } else {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementDown[i].triggerColor,30+elementDown[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,30));
         }
         ofRect(elementDown[i].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
         ofRect(elementDown[i].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
@@ -350,7 +350,7 @@ void ofApp::downPartDraw(){
     }
     
     ofPopStyle();
-
+    
     ofPopMatrix();
     
 }
@@ -369,43 +369,43 @@ void ofApp::upPartDraw() {
     ofSetRectMode(OF_RECTMODE_CENTER);
     
     
-        if (elementUp[upIndex].onOffTrigger) {
-            if (!elementUp[upIndex].bBeingClick) {
-                elementUp[upIndex].triggerColor = 100;
-            } else {
-                elementUp[upIndex].triggerColor = 0;
-            }
-            elementUp[upIndex].onOffTrigger = false;
+    if (elementUp[upIndex].onOffTrigger) {
+        if (!elementUp[upIndex].bBeingClick) {
+            elementUp[upIndex].triggerColor = 100;
         } else {
             elementUp[upIndex].triggerColor = 0;
         }
+        elementUp[upIndex].onOffTrigger = false;
+    } else {
+        elementUp[upIndex].triggerColor = 0;
+    }
     
-        
-        if (elementUp[upIndex].soundTrigger&&upPart.bBeingClick) {
-            ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,200+elementUp[upIndex].triggerColor));
-            ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
-                   elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
-        } else {
-            ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,60+elementUp[upIndex].triggerColor));
-            ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
-                   elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
-        }
-        
-        if (!elementUp[upIndex].bBeingClick) {
-            ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,170+elementUp[upIndex].triggerColor));
-        } else {
-            ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,30+elementUp[upIndex].triggerColor));
-        }
-        
-        ofRect(elementUp[upIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
-        ofRect(elementUp[upIndex].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
+    
+    if (elementUp[upIndex].soundTrigger&&upPart.bBeingClick) {
+        ofFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,200+elementUp[upIndex].triggerColor));
+        ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
+               elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
+    } else {
+        ofNoFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,60+elementUp[upIndex].triggerColor));
+        ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
+               elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
+    }
+    
+    if (!elementUp[upIndex].bBeingClick) {
+        ofNoFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,170+elementUp[upIndex].triggerColor));
+    } else {
+        ofFill();
+        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,30+elementUp[upIndex].triggerColor));
+    }
+    
+    ofRect(elementUp[upIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
+    ofRect(elementUp[upIndex].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
     ofPopStyle();
-
-
+    
+    
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
     
@@ -413,22 +413,22 @@ void ofApp::upPartDraw() {
         
         if (elementUp[i].soundTrigger&&upPart.bBeingClick) {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[i].triggerColor,150+elementUp[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,150));
             ofLine(elementUp[i].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
                    elementUp[i].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
         } else {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[i].triggerColor,60+elementUp[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,60));
             ofLine(elementUp[i].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
                    elementUp[i].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
         }
         
         if (!elementUp[i].bBeingClick) {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[i].triggerColor,120+elementUp[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,120));
         } else {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255+elementUp[i].triggerColor,30+elementUp[i].triggerColor));
+            ofSetColor(ofColor::fromHsb(0,0,255,30));
         }
         
         ofRect(elementUp[i].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
@@ -494,7 +494,7 @@ void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver,
         ofFill();
         ofSetColor(_cLineOff);
     }
-
+    
     ofLine(_vTOnOffPos+ofVec2f(controlRectSize*rectSizeRatio*0.5, 0), _vTSizePos-ofVec2f(controlRectSize*rectSizeRatio*0.5, 0));
     ofPopStyle();
     
@@ -745,16 +745,16 @@ void ofApp::menuDraw(){
     ofPopStyle();
     ofPopMatrix();
     
-
+    
     ofPushMatrix();
     ofPushStyle();
     
-
+    
     int _width = 40*2;
     int _spacing = 10*2;
-
+    
     ofTranslate(_spacing, 0);
-
+    
     ofTranslate(_spacing + _width*0.5, ofGetHeight() * 0.5);
     
     int rotateOnOff = dnIndex%2;
@@ -765,7 +765,7 @@ void ofApp::menuDraw(){
     }
     
     ofTranslate(-_spacing - _width*0.5, -ofGetHeight() * 0.5);
-
+    
     if (mainStopStart) {
         mainStopStart = 1;
     } else {
@@ -777,13 +777,13 @@ void ofApp::menuDraw(){
         ofSetColor(ofColor::fromHsb(0,0,255,40));
         ofRect(mainMenu);
     }
-
+    
     ofNoFill();
     ofSetColor(ofColor::fromHsb(0,0,255,220));
     ofRect(mainMenu);
     ofPopStyle();
     ofPopMatrix();
-
+    
     
 }
 
@@ -817,7 +817,7 @@ void ofApp::exit(){
         elementDown[i].samplePlay.unloadSound();
         elementUp[i].samplePlay.unloadSound();
     }
-
+    
 }
 
 
@@ -897,7 +897,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     if (mainMenu.inside(_inputSampleChange)) {
         mainStopStart = !mainStopStart;
     }
-
+    
     
 }
 
