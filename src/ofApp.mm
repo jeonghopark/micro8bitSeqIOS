@@ -41,10 +41,10 @@ void ofApp::setup(){
     mainTempo = 1;
     
     for (int i=0; i<16; i++) {
-        randomY[i] = ofRandom(50*2,ofGetHeight()*2/5);
+        randomY[i] = ofRandom(50*2,ofGetWidth()*2/5);
     }
     
-    downPart.length = ofGetWidth()*3/8;
+    downPart.length = ofGetWidth()*4/8;
     downPart.bBeingClick = true;
     downPart.bTimerReached = true;
     downPart.bDownSoundRecordClick = true;
@@ -116,8 +116,8 @@ void ofApp::setup(){
     
     maxLine = 730*2;
     minLine = 290*2;
-    maxTempo = 670;
-    minTempo = 300;
+    maxTempo = 770;
+    minTempo = 400;
     tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo);
     
     threadedObject.notesPerPhrase = 1;
@@ -301,17 +301,17 @@ void ofApp::downPartDraw(){
                elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio)*0.5);
     } else {
         ofNoFill();
-        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,60+elementDown[dnIndex].triggerColor));
-        ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
-               elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5));
+        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,0));
+//        ofLine(elementDown[dnIndex].onOffRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5),
+//               elementDown[dnIndex].pitchRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5));
     }
     
     if (!elementDown[dnIndex].bBeingClick) {
         ofNoFill();
         ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,170+elementDown[dnIndex].triggerColor));
     } else {
-        ofFill();
-        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
+//        ofFill();
+//        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
     }
     ofRect(elementDown[dnIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
     ofRect(elementDown[dnIndex].pitchRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
@@ -388,17 +388,17 @@ void ofApp::upPartDraw() {
                elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
     } else {
         ofNoFill();
-        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,60+elementUp[upIndex].triggerColor));
-        ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
-               elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
+        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,0));
+//        ofLine(elementUp[upIndex].onOffRectPos+ofVec2f(0,-controlRectSize*rectSizeRatio*0.5),
+//               elementUp[upIndex].pitchRectPos+ofVec2f(0,controlRectSize*rectSizeRatio*0.5));
     }
     
     if (!elementUp[upIndex].bBeingClick) {
         ofNoFill();
         ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,170+elementUp[upIndex].triggerColor));
     } else {
-        ofFill();
-        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,30+elementUp[upIndex].triggerColor));
+//        ofFill();
+//        ofSetColor(ofColor::fromHsb(0,0,255+elementUp[upIndex].triggerColor,30+elementUp[upIndex].triggerColor));
     }
     
     ofRect(elementUp[upIndex].onOffRectPos, controlRectSize*rectSizeRatio, controlRectSize*rectSizeRatio);
@@ -793,11 +793,11 @@ void ofApp::menuSetting(){
     int _width = 40 * 2;
     int _spacing = 10 * 2;
     
-    mainMenu.set(_spacing, ofGetHeight()*0.5-_width*0.5, _width, _width);
+    mainMenu.set(_spacing, ofGetWidth()*0.5-_width*0.5, _width, _width);
     
-    sampleChangeUp.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5-_width-_spacing*0.5,
+    sampleChangeUp.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5-_width-_spacing*0.5,
                        _width, _width);
-    sampleChangeDn.set(ofGetWidth()-_width-_spacing, ofGetHeight()*0.5+_spacing*0.5,
+    sampleChangeDn.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5+_spacing*0.5,
                        _width, _width);
     
 }
@@ -935,8 +935,9 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     }
     
     if (downPart.bLengthBeingDragged == true){
-        if (touch.x<657) {
-            touch.x = 657;
+        cout << touch.x << endl;
+        if (touch.x<ofGetWidth()*0.634765625) {
+            touch.x = ofGetWidth()*0.634765625;
         }
         if (touch.x>ofGetWidth()-ofGetWidth()*0.144){
             touch.x = ofGetWidth()-ofGetWidth()*0.144;
