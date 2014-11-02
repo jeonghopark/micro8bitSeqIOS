@@ -56,8 +56,7 @@ void ThreadedObject::threadedFunction(){
 //            trigger = true;
             unlock();
             // Phrase complete
-            if (notes >= notesPerPhrase)
-            {
+            if (notes >= notesPerPhrase) {
                 
                 // Call function on main app
                 parent->phraseComplete();

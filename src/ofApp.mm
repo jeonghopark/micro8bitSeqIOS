@@ -208,12 +208,10 @@ void ofApp::phraseComplete(){
                 
                 float _spdRandom = ofRandom(0.75,1.25);
                 float _spdValueMap = ofMap(elementDown[dnIndex].pitchRectPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-                float _value = _spdValueMap;
+                float _value = _spdValueMap * _spdRandom;
                 elementDown[dnIndex].samplePlay.setSpeed(_value);
             }
-            
         }
-        
     }
     
     
@@ -231,10 +229,9 @@ void ofApp::phraseComplete(){
                 
                 float _spdRandom = ofRandom(0.75,1.25);
                 float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchRectPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-                float _value = _spdValueMap;
+                float _value = _spdValueMap * _spdRandom;
                 elementUp[upIndex].samplePlay.setSpeed(_value);
             }
-            
         }
     }
     
@@ -263,7 +260,7 @@ void ofApp::draw(){
     }
     
     //    fadeInBackground();
-    //    touchGuideLine();
+//        touchGuideLine();
     //    ofDrawBitmapString(ofToString(ofGetFrameRate(),2), 10, 10);
     
     menuDraw();
@@ -795,9 +792,9 @@ void ofApp::menuSetting(){
     
     mainMenu.set(_spacing, ofGetWidth()*0.5-_width*0.5, _width, _width);
     
-    sampleChangeUp.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5-_width-_spacing*0.5,
-                       _width, _width);
-    sampleChangeDn.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5+_spacing*0.5,
+//    sampleChangeUp.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5-_width-_spacing*0.5,
+//                       _width, _width);
+    sampleChangeDn.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5+-_width*0.5,
                        _width, _width);
     
 }
@@ -867,32 +864,46 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     if (sampleChangeDn.inside(_inputSampleChange)) {
         downPart.bChangeSampleClick = true;
         sampleChangeDnMenu = true;
-    }
-    
-    if (sampleChangeUp.inside(_inputSampleChange)) {
         upPart.bChangeSampleClick = true;
         sampleChangeUpMenu = true;
     }
     
-    if (upPart.bChangeSampleClick){
-        upPart.changeSampleIndex++;
-        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
-        for (int i = 0; i<nElementLine; i++){
-            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
-            elementUp[i].samplePlay.loadSound(fileNameUp);
-        }
-        upPart.bChangeSampleClick = false;
-    }
+//    if (sampleChangeUp.inside(_inputSampleChange)) {
+//        upPart.bChangeSampleClick = true;
+//        sampleChangeUpMenu = true;
+//    }
     
     if (downPart.bChangeSampleClick){
-        downPart.changeSampleIndex++;
         downPart.changeSampleIndex = downPart.changeSampleIndex%dir.size();
         for (int i = 0; i<nElementLine; i++){
             string fileNameDown = "sounds/samples/" + dir.getName(downPart.changeSampleIndex);
             elementDown[i].samplePlay.loadSound(fileNameDown);
         }
         downPart.bChangeSampleClick = false;
+
+        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
+        for (int i = 0; i<nElementLine; i++){
+            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
+            elementUp[i].samplePlay.loadSound(fileNameUp);
+        }
+        upPart.bChangeSampleClick = false;
+        
+        cout << downPart.changeSampleIndex << endl;
+
+        downPart.changeSampleIndex++;
+        upPart.changeSampleIndex++;
+
     }
+    
+//    if (upPart.bChangeSampleClick){
+//        upPart.changeSampleIndex++;
+//        upPart.changeSampleIndex = upPart.changeSampleIndex%dir.size();
+//        for (int i = 0; i<nElementLine; i++){
+//            string fileNameUp = "sounds/samples/" + dir.getName(upPart.changeSampleIndex);
+//            elementUp[i].samplePlay.loadSound(fileNameUp);
+//        }
+//        upPart.bChangeSampleClick = false;
+//    }
     
     if (mainMenu.inside(_inputSampleChange)) {
         mainStopStart = !mainStopStart;
@@ -957,7 +968,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 }
 
 
-//--------------------------------------------------------------
+//--------------------------------------------------------------    
 void ofApp::touchUp(ofTouchEventArgs & touch){
     
 }
