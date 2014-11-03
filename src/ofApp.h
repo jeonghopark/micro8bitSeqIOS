@@ -183,6 +183,10 @@ public:
     
     float upIndexOldTimer;
     
+    int menuStartRectSize, menuStartRectSpacing;
+    
+
+    
 };
 
 

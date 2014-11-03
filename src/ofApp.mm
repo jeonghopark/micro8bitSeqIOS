@@ -22,6 +22,15 @@ void ofApp::setup(){
     
     ofSoundStreamSetup(2, 1, this, sampleRate, initialBufferSize, 4);
     
+    if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
+        menuStartRectSize = 40*2;
+        menuStartRectSpacing = 10*2;
+    }else{
+        menuStartRectSize = ofGetWidth()/51.2*4;
+        menuStartRectSpacing = ofGetWidth()/204.8*4;
+    }
+
+    
     dir.listDir("sounds/samples/");
     dir.sort();
     
@@ -129,7 +138,6 @@ void ofApp::setup(){
     menuSetting();
     
     minRecordRectPosX = ofGetWidth()*0.1347;
-    
     
 }
 
@@ -742,17 +750,12 @@ void ofApp::menuDraw(){
     ofPopStyle();
     ofPopMatrix();
     
-    
     ofPushMatrix();
     ofPushStyle();
     
+    ofTranslate(menuStartRectSpacing, 0);
     
-    int _width = 40*2;
-    int _spacing = 10*2;
-    
-    ofTranslate(_spacing, 0);
-    
-    ofTranslate(_spacing + _width*0.5, ofGetHeight() * 0.5);
+    ofTranslate(menuStartRectSpacing + menuStartRectSize*0.5, ofGetHeight() * 0.5);
     
     int rotateOnOff = dnIndex%2;
     if (rotateOnOff==0) {
@@ -761,7 +764,7 @@ void ofApp::menuDraw(){
         ofRotateZ(-45);
     }
     
-    ofTranslate(-_spacing - _width*0.5, -ofGetHeight() * 0.5);
+    ofTranslate(-menuStartRectSpacing - menuStartRectSize*0.5, -ofGetHeight() * 0.5);
     
     if (mainStopStart) {
         mainStopStart = 1;
@@ -787,15 +790,12 @@ void ofApp::menuDraw(){
 //--------------------------------------------------------------
 void ofApp::menuSetting(){
     
-    int _width = 40 * 2;
-    int _spacing = 10 * 2;
+    mainMenu.set(menuStartRectSpacing, ofGetWidth()*0.5-menuStartRectSize*0.5, menuStartRectSize, menuStartRectSize);
     
-    mainMenu.set(_spacing, ofGetWidth()*0.5-_width*0.5, _width, _width);
-    
-//    sampleChangeUp.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5-_width-_spacing*0.5,
-//                       _width, _width);
-    sampleChangeDn.set(ofGetHeight()-_width-_spacing, ofGetWidth()*0.5+-_width*0.5,
-                       _width, _width);
+//    sampleChangeUp.set(ofGetHeight()-menuStartRectSize-menuStartRectSpacing, ofGetWidth()*0.5-menuStartRectSize-menuStartRectSpacing*0.5,
+//                       menuStartRectSize, menuStartRectSize);
+    sampleChangeDn.set(ofGetHeight()-menuStartRectSize-menuStartRectSpacing, ofGetWidth()*0.5+-menuStartRectSize*0.5,
+                       menuStartRectSize, menuStartRectSize);
     
 }
 
@@ -888,7 +888,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
         }
         upPart.bChangeSampleClick = false;
         
-        cout << downPart.changeSampleIndex << endl;
+//        cout << downPart.changeSampleIndex << endl;
 
         downPart.changeSampleIndex++;
         upPart.changeSampleIndex++;
@@ -946,7 +946,6 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     }
     
     if (downPart.bLengthBeingDragged == true){
-        cout << touch.x << endl;
         if (touch.x<ofGetWidth()*0.634765625) {
             touch.x = ofGetWidth()*0.634765625;
         }
