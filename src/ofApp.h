@@ -7,13 +7,20 @@
 
 #include "ThreadedObject.h"
 
+//#define DEBUG_MODE
+//
+//#ifdef DEBUG_MODE
+//bool debug_mode = true;
+//#endif
+
+
 typedef struct
 {
-	ofVec2f position;
-	bool 	bLengthBeingDragged;
-	bool 	bBeingClick;
-	bool 	bLengthOver;
-	bool 	bOnOffOver;
+    ofVec2f position;
+    bool 	bLengthBeingDragged;
+    bool 	bBeingClick;
+    bool 	bLengthOver;
+    bool 	bOnOffOver;
     ofVec2f onOffRectPos;
     ofVec2f pitchRectPos;
     bool onOffTrigger;
@@ -26,16 +33,16 @@ controlElementLine;
 
 typedef struct
 {
-	ofVec2f position;
-	bool 	bLengthBeingDragged;
-	bool 	bBeingClick;
-	bool 	bLengthOver;
-	bool 	bOnOffOver;
+    ofVec2f position;
+    bool 	bLengthBeingDragged;
+    bool 	bBeingClick;
+    bool 	bLengthOver;
+    bool 	bOnOffOver;
     ofVec2f onOffRectPos;
     ofVec2f lengthRectPos;
     float length;
     ofVec2f delayPos;
-	bool 	bDelayPosOver;
+    bool 	bDelayPosOver;
     bool    bDelayPosDragged;
     
     ofVec2f recBlockPos;
@@ -62,13 +69,13 @@ controlTempoLine;
 
 
 class ofApp : public ofxiOSApp{
-	
+    
 public:
     void setup();
     void update();
     void draw();
     void exit();
-	
+    
     void touchDown(ofTouchEventArgs & touch);
     void touchMoved(ofTouchEventArgs & touch);
     void touchUp(ofTouchEventArgs & touch);
@@ -97,9 +104,9 @@ public:
     void audioRequested(float *output, int bufferSize, int nChannels);
     
     int	initialBufferSize;
-	int	sampleRate;
-	int	drawCounter;
-	float * buffer;
+    int	sampleRate;
+    int	drawCounter;
+    float * buffer;
     
     int nElementLine;
     controlElementLine elementDown[8];
@@ -168,7 +175,7 @@ public:
     ofRectangle mainMenu;
     bool sampleChangeUpMenu;
     bool sampleChangeDnMenu;
-    bool mainStopStart;
+    bool mainStartStop;
     int mainTempo;
     
     //tempo
@@ -185,7 +192,9 @@ public:
     
     int menuStartRectSize, menuStartRectSpacing;
     
-
+    // MODE
+    bool debugMode;
+    void debugModeView(int _i, string _pos);
     
 };
 
