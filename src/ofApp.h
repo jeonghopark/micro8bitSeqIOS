@@ -164,17 +164,13 @@ public:
     int upIndex;
     int dnIndex;
     
-    // sample change
-    void sampleChange();
     
     // Menu
     void menuDraw();
     void menuSetting();
-    ofRectangle sampleChangeUp;
-    ofRectangle sampleChangeDn;
+    ofRectangle sampleChange;
     ofRectangle mainMenu;
-    bool sampleChangeUpMenu;
-    bool sampleChangeDnMenu;
+    bool sampleChangeMenu;
     bool mainStartStop;
     int mainTempo;
     
