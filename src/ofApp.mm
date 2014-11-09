@@ -9,13 +9,37 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     
+    
+    // iPad : width = 1536, height = 2048
+    // iPhone : width = 640, height = 1136
+    
+    
     if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad) {
         menuStartRectSize = 40*2;
         menuStartRectSpacing = 10*2;
+
+        maxLine = 1756; // ofGetWidth()*0.63476*2
+        minLine = 1343; // ofGetWidth()-ofGetWidth()*0.144
+        
+        maxTempo = 700;
+        minTempo = 400;
+        
+        downPart.length = 768; // ofGetWidth()*4/8;
     }else{
         menuStartRectSize = ofGetWidth()/51.2*4;
         menuStartRectSpacing = ofGetWidth()/204.8*4;
+
+        maxLine = 964; // ofGetWidth()*0.63476*2
+        minLine = 810; // ofGetWidth()-ofGetWidth()*0.244
+        
+        maxTempo = 700;
+        minTempo = 400;
+
+        downPart.length = 586;
     }
+    
+    cout << ofGetWidth() << endl;
+    cout << ofGetHeight() << endl;
     
     ofxAccelerometer.setup();
     ofxMultiTouch.addListener(this);
@@ -44,7 +68,7 @@ void ofApp::setup(){
     
     ctrlRectSize = 22 * 2;
     
-    sampleRecordingTime = 500;
+    sampleRecordingTime = 320;
     
     mainStartStop = true;
     mainTempo = 1;
@@ -53,7 +77,7 @@ void ofApp::setup(){
         randomY[i] = ofRandom(50*2,ofGetWidth()*2/5);
     }
     
-    downPart.length = ofGetWidth()*4/8;
+//    downPart.length = ofGetWidth()*4/8;
     downPart.bBeingClick = true;
     downPart.bTimerReached = true;
     downPart.bDownSoundRecordClick = false;
@@ -123,10 +147,14 @@ void ofApp::setup(){
     
     recBlockSize = initialBufferSize * 0.5;
     
-    maxLine = ofGetWidth()*0.7129*2;
-    minLine = ofGetWidth()*0.2832*2;
-    maxTempo = 770;
-    minTempo = 400;
+//    maxLine = ofGetWidth()*0.7129*2;
+//    minLine = ofGetWidth()*0.2832*2;
+
+//    maxLine = ofGetWidth()*0.63476*2;
+//    minLine = ofGetWidth()-ofGetWidth()*0.144;
+//    
+//    maxTempo = 700;
+//    minTempo = 400;
     tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo);
     
     threadedObject.notesPerPhrase = 1;
@@ -711,7 +739,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     }
 
     ofNoFill();
-    ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 220, 70));
+    ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 220, 140));
     for (int i=0; i<(int)_volumeParameter; i+=10) {
         ofRect( 0, i+_lineThick, _volumeWidth, _lineThick*2 );
         ofRect( 0, -i-_lineThick, _volumeWidth, _lineThick*2 );
@@ -807,7 +835,7 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
     
     if (downPart.recordState==3){
         downPart.myWavWriter.write(input, bufferSize*nChannels);
-        upPart.myWavWriter.write(input, bufferSize*nChannels);
+//        upPart.myWavWriter.write(input, bufferSize*nChannels);
     }
     
     if (downPart.recordState==2){
@@ -1003,11 +1031,11 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     }
     
     if (downPart.bLengthBeingDragged == true){
-        if (touch.x<ofGetWidth()*0.63476) {
-            touch.x = ofGetWidth()*0.63476;
+        if (touch.x<minLine) {
+            touch.x = minLine;
         }
-        if (touch.x>ofGetWidth()-ofGetWidth()*0.144){
-            touch.x = ofGetWidth()-ofGetWidth()*0.144;
+        if (touch.x>maxLine){
+            touch.x = maxLine;
         }
         downPart.lengthRectPos.x = touch.x;
     }
@@ -1021,6 +1049,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
             upPart.position.x = -49;
         }
     }
+    
 }
 
 
