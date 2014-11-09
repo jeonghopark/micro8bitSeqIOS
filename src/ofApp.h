@@ -14,8 +14,7 @@
 //#endif
 
 
-typedef struct
-{
+typedef struct{
     ofVec2f position;
     bool 	bLengthBeingDragged;
     bool 	bBeingClick;
@@ -31,8 +30,7 @@ typedef struct
 }
 controlElementLine;
 
-typedef struct
-{
+typedef struct{
     ofVec2f position;
     bool 	bLengthBeingDragged;
     bool 	bBeingClick;
@@ -63,7 +61,6 @@ typedef struct
     bool bChangeSampleClick;
     bool bChangeSampleOver;
     int changeSampleIndex;
-    
 }
 controlTempoLine;
 
@@ -86,7 +83,6 @@ public:
     void gotFocus();
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
-    
     
     void threadedFunction();
     
@@ -120,7 +116,6 @@ public:
     
     int backgroundColorHue;
     
-    
     int startTime;
     
     void downPartDraw();
@@ -141,7 +136,7 @@ public:
     
     float randomY[16];
     
-    int controlRectSize;
+    int ctrlRectSize;
     
     int delayupPart;
     
@@ -164,15 +159,17 @@ public:
     int upIndex;
     int dnIndex;
     
-    
     // Menu
     void menuDraw();
     void menuSetting();
     ofRectangle sampleChange;
     ofRectangle mainMenu;
+    ofRectangle waveRecord;
+    ofVec2f waveRecordPos;
     bool sampleChangeMenu;
     bool mainStartStop;
     int mainTempo;
+    bool bWaveRect;
     
     //tempo
     float maxLine;
@@ -183,7 +180,6 @@ public:
     float minRecordRectPosX;
     float sampleRecordingTime;
     
-    
     float upIndexOldTimer;
     
     int menuStartRectSize, menuStartRectSpacing;
@@ -191,6 +187,8 @@ public:
     // MODE
     bool debugMode;
     void debugModeView(int _i, string _pos);
+  
+    float volumeParameter;
     
 };
 
