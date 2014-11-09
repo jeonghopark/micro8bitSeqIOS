@@ -728,17 +728,20 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
         
         ofPopStyle();
         
-        if ((abs(buffer[i+1]*50.0f)>5)&&!downPart.bDownSoundRecordClick){
+//        if ((abs(buffer[i+1]*50.0f)>5)&&!downPart.bDownSoundRecordClick){
+//            downPart.startTime = ofGetElapsedTimeMillis();
+//        }
+//        if ((abs(buffer[i+1]*50.0f)>5)&&!upPart.bDownSoundRecordClick){
+//            upPart.startTime = ofGetElapsedTimeMillis();
+//        }
+        if ((abs(buffer[i+1]*50.0f)>10)){
             downPart.startTime = ofGetElapsedTimeMillis();
-        }
-        if ((abs(buffer[i+1]*50.0f)>5)&&!upPart.bDownSoundRecordClick){
-            upPart.startTime = ofGetElapsedTimeMillis();
+//            upPart.startTime = ofGetElapsedTimeMillis();
         }
     }
     
     ofPopMatrix();
     
-    if (_vP.y == downPart.recBlockPos.y){
         downPart.recordingTime = sampleRecordingTime;
         downPart.timeStamp = ofGetElapsedTimeMillis() - downPart.startTime;
         
@@ -754,27 +757,26 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
                 downPart.recordState=2;
             }
             downPart.bTimerReached = true;
-            downPart.bDownSoundRecordClick = true;
+            bWaveRect = false;
         }
-    } else {
-        upPart.recordingTime = sampleRecordingTime;
-        upPart.timeStamp = ofGetElapsedTimeMillis() - upPart.startTime;
-        
-        if ((upPart.timeStamp<upPart.recordingTime)){
-            if (upPart.recordState==0){
-                upPart.recordState=1;
-            }
-            upPart.bTimerReached = false;
-        }
-        
-        if ((upPart.timeStamp>=upPart.recordingTime)&&!upPart.bTimerReached){
-            if (upPart.recordState==3){
-                upPart.recordState=2;
-            }
-            upPart.bTimerReached = true;
-            upPart.bDownSoundRecordClick = true;
-        }
-    }
+//        upPart.recordingTime = sampleRecordingTime;
+//        upPart.timeStamp = ofGetElapsedTimeMillis() - upPart.startTime;
+//        
+//        if ((upPart.timeStamp<upPart.recordingTime)){
+//            if (upPart.recordState==0){
+//                upPart.recordState=1;
+//            }
+//            upPart.bTimerReached = false;
+//        }
+//        
+//        if ((upPart.timeStamp>=upPart.recordingTime)&&!upPart.bTimerReached){
+//            if (upPart.recordState==3){
+//                upPart.recordState=2;
+//            }
+//            upPart.bTimerReached = true;
+//            bWaveRect = false;
+//        }
+    
     
 }
 
@@ -797,13 +799,15 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
         buffer[i] = input[i];
     }
     
-    if ((downPart.recordState==1)&&(soundRecordingDownOn)){
+    if ((downPart.recordState==1)){
         downPart.recordState=3;
         downPart.myWavWriter.open(ofxiOSGetDocumentsDirectory() + "recordingDown.wav", WAVFILE_WRITE);
+//        upPart.myWavWriter.open(ofxiOSGetDocumentsDirectory() + "recordingUp.wav", WAVFILE_WRITE);
     }
     
     if (downPart.recordState==3){
         downPart.myWavWriter.write(input, bufferSize*nChannels);
+        upPart.myWavWriter.write(input, bufferSize*nChannels);
     }
     
     if (downPart.recordState==2){
@@ -811,25 +815,26 @@ void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
         downPart.recordState=0;
         for (int i = 0; i<nElementLine; i++){
             elementDown[i].samplePlay.loadSound(ofxiOSGetDocumentsDirectory() + "recordingDown.wav");
+            elementUp[i].samplePlay.loadSound(ofxiOSGetDocumentsDirectory() + "recordingDown.wav");
         }
     }
     
-    if ((upPart.recordState==1)&&(soundRecordingDownOn)){
-        upPart.recordState=3;
-        upPart.myWavWriter.open(ofxiOSGetDocumentsDirectory() + "recordingUp.wav", WAVFILE_WRITE);
-    }
-    
-    if (upPart.recordState==3){
-        upPart.myWavWriter.write(input, bufferSize*nChannels);
-    }
-    
-    if (upPart.recordState==2){
-        upPart.myWavWriter.close();
-        upPart.recordState=0;
-        for (int i = 0; i<nElementLine; i++){
-            elementUp[i].samplePlay.loadSound(ofxiOSGetDocumentsDirectory() + "recordingUp.wav");
-        }
-    }
+//    if ((upPart.recordState==1)){
+//        upPart.recordState=3;
+//        upPart.myWavWriter.open(ofxiOSGetDocumentsDirectory() + "recordingUp.wav", WAVFILE_WRITE);
+//    }
+//    
+//    if (upPart.recordState==3){
+//        upPart.myWavWriter.write(input, bufferSize*nChannels);
+//    }
+//    
+//    if (upPart.recordState==2){
+//        upPart.myWavWriter.close();
+//        upPart.recordState=0;
+//        for (int i = 0; i<nElementLine; i++){
+//            elementUp[i].samplePlay.loadSound(ofxiOSGetDocumentsDirectory() + "recordingUp.wav");
+//        }
+//    }
     
 }
 

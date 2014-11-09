@@ -49,7 +49,7 @@ typedef struct{
     int startTime;
     
     WavFile myWavWriter;
-    int recordState=0;
+    int recordState;
     bool bTimerReached;
     int timeStamp;
     
