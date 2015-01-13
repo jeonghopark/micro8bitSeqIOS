@@ -24,7 +24,7 @@ void ofApp::setup(){
         maxTempo = 700;
         minTempo = 400;
         
-        downPart.length = 768; // ofGetWidth()*4/8;
+        downPart.length = 1080; // ofGetWidth()*4/8;
     }else{
         menuStartRectSize = ofGetWidth()/51.2*4;
         menuStartRectSpacing = ofGetWidth()/204.8*4;
