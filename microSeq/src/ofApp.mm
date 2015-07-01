@@ -628,12 +628,12 @@ void ofApp::menuDraw(){
     ofTranslate(-menuStartRectSpacing - menuStartRectSize*0.5, -ofGetHeight() * 0.5);
     
     if (mainStartStop) {
-        mainStartStop = 1;
+        mainStartStop = true;
     } else {
-        mainStartStop = 0;
-        thredCounter = -1;
-        indexCounterDn = -1;
-        indexCounterUp = -1;
+        mainStartStop = false;
+        thredCounter = 0;
+        indexCounterDn = 0;
+        indexCounterUp = 0;
         ofFill();
         ofSetColor(ofColor::fromHsb(0,0,255,40));
         ofRect(mainMenu);
@@ -1004,9 +1004,6 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
         
     }
     
-    if (mainMenu.inside(_inputSampleChange)) {
-        mainStartStop = !mainStartStop;
-    }
     
     
 }
@@ -1070,6 +1067,12 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs & touch){
     
+    ofVec2f _inputSampleChange = ofVec2f(touch.x, touch.y);
+
+    if (mainMenu.inside(_inputSampleChange)) {
+        mainStartStop = !mainStartStop;
+    }
+
 }
 
 //--------------------------------------------------------------
