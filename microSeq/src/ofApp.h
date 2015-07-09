@@ -127,8 +127,6 @@ public:
     
     void drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos);
     
-    bool soundRecordingDownOn;
-    bool recordTrigger;
     
     void recordingLineDraw(ofVec2f _vP);
     
