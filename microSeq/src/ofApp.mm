@@ -9,6 +9,26 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     
+    screenW = 2048;
+    screenH = 2048 * 3.0 / 4.0;
+    
+    synthSetting();
+    maxSpeed = 200;
+    minSpeed = 30;
+    bpm = synthMain.addParameter("tempo",100).min(minSpeed).max(maxSpeed);
+    metro = ControlMetro().bpm(4 * bpm);
+    metroOut = synthMain.createOFEvent(metro);
+    //    synthMain.setOutputGen();
+    
+    tap.load("sounds/samples/tap_01.wav");
+    
+    index = 0;
+    
+    ofAddListener(* metroOut, this, &ofApp::triggerReceive);
+    
+    ofSoundStreamSetup(2, 0, this, 44100, 256, 4);
+
+    
     // iPad : width = 1536, height = 2048
     // iPhone : width = 640, height = 1136
     
@@ -180,6 +200,17 @@ void ofApp::setup(){
     
 }
 
+
+//--------------------------------------------------------------
+void ofApp::triggerReceive(float & metro){
+    
+    index++;
+    noteIndex = index;
+    
+    tap.play();
+    cout << index << endl;
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
     
@@ -255,7 +286,7 @@ void ofApp::phraseComplete(){
             
             if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
                 elementDown[dnIndex].onOffTrigger = true;
-                elementDown[dnIndex].samplePlay.play();
+//                elementDown[dnIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
                 elementDown[dnIndex].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
                 
@@ -276,7 +307,7 @@ void ofApp::phraseComplete(){
             
             if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
                 elementUp[upIndex].onOffTrigger = true;
-                elementUp[upIndex].samplePlay.play();
+//                elementUp[upIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
                 elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
                 
@@ -804,9 +835,12 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
 
 
 //--------------------------------------------------------------
-void ofApp::audioRequested(float * output, int bufferSize, int nChannels){
+void ofApp::audioRequested (float * output, int bufferSize, int nChannels){
+    
+    synthMain.fillBufferOfFloats(output, bufferSize, nChannels);
     
 }
+
 
 
 //--------------------------------------------------------------
@@ -974,6 +1008,12 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchMoved(ofTouchEventArgs & touch){
     
+    float _tempo = ofMap( touch.y, 0, screenH, maxSpeed, minSpeed );
+    synthMain.setParameter("tempo", _tempo);
+    
+    cout << touch.y << endl;
+
+    
     ofVec2f _touchCaP = ofVec2f(touch.x-22, touch.y);
     touchPos = _touchCaP;
     
@@ -1067,3 +1107,9 @@ void ofApp::gotMemoryWarning(){
 void ofApp::deviceOrientationChanged(int newOrientation){
     
 }
+
+//--------------------------------------------------------------
+void ofApp::synthSetting(){
+    
+}
+

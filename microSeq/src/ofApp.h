@@ -7,6 +7,10 @@
 
 #include "ThreadedObject.h"
 
+#include "ofxTonic.h"
+
+using namespace Tonic;
+
 //#define DEBUG_MODE
 //
 //#ifdef DEBUG_MODE
@@ -66,6 +70,10 @@ controlTempoLine;
 
 
 class ofApp : public ofxiOSApp{
+    
+    ofxTonicSynth synth1;
+    ofxTonicSynth synthMain;
+
     
 public:
     void setup();
@@ -187,6 +195,20 @@ public:
     void debugModeView(int _i, string _pos);
   
     float volumeParameter;
+    
+    // Tonic
+    int screenW, screenH;
+    int maxSpeed, minSpeed;
+    void synthSetting();
+    ControlGenerator bpm;
+    ControlGenerator metro;
+    ofEvent<float> * metroOut;
+    void triggerReceive(float & metro);
+    int index;
+    int noteIndex;
+    void noteTrigger();
+    ofSoundPlayer tap;
+
     
 };
 
