@@ -26,7 +26,6 @@ void ofApp::setup(){
     
     ofAddListener(* metroOut, this, &ofApp::triggerReceive);
     
-    ofSoundStreamSetup(2, 0, this, 44100, 256, 4);
 
     
     // iPad : width = 1536, height = 2048
@@ -36,11 +35,13 @@ void ofApp::setup(){
         menuStartRectSize = 40 * 2;
         menuStartRectSpacing = 10 * 2;
         
-        maxLine = 1756; // ofGetWidth()*0.63476*2
-        minLine = 1343; // ofGetWidth()-ofGetWidth()*0.144
+        maxLine = 1856; // ofGetWidth()*0.63476*2
+        minLine = 800; // ofGetWidth()-ofGetWidth()*0.144
         
-        maxTempo = 700;
-        minTempo = 400;
+        
+        
+//        maxTempo = 700;
+//        minTempo = 400;
         
         downPart.length = 1080; // ofGetWidth()*4/8;
     }else{
@@ -81,7 +82,7 @@ void ofApp::setup(){
     buffer = new float[initialBufferSize];
     memset(buffer, 0, initialBufferSize * sizeof(float));
     
-    ofSoundStreamSetup(2, 1, this, sampleRate, initialBufferSize, 4);
+//    ofSoundStreamSetup(2, 0, this, sampleRate, initialBufferSize, 4);
     
     dir.listDir("sounds/samples/");
     dir.sort();
@@ -185,8 +186,8 @@ void ofApp::setup(){
     //    minTempo = 400;
     tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo);
     
-    threadedObject.notesPerPhrase = 1;
-    threadedObject.start(this);
+//    threadedObject.notesPerPhrase = 1;
+//    threadedObject.start(this);
     
     thredCounter = 0;
     
@@ -198,6 +199,15 @@ void ofApp::setup(){
     
     volumeParameter = ofGetHeight() * 0.05;
     
+    indexCounterDn = 0;
+    indexCounterUp = 0;
+    
+    dnIndex = 0;
+    upIndex = 0;
+    
+    
+    ofSoundStreamSetup(2, 0, this, 44100, 256, 4);
+
 }
 
 
@@ -207,17 +217,18 @@ void ofApp::triggerReceive(float & metro){
     index++;
     noteIndex = index;
     
-    tap.play();
-    cout << index << endl;
+    phraseComplete();
+//    tap.play();
+//    cout << index << endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
     //    ofSoundUpdate();
-    dnIndex = indexCounterDn%8;
-    upIndex = indexCounterUp%8;
-        
+//    dnIndex = indexCounterDn%8;
+//    upIndex = indexCounterUp%8;
+    
     float _recBlockPosCh = recBlockSize;
     
     downPart.recBlockPos = ofVec2f(downPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5+ofGetHeight()*0.1);
@@ -237,7 +248,14 @@ void ofApp::update(){
     
     delayupPart = (int)(upPart.position.x)/24;
     
-    tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo) * mainTempo;
+    
+
+//    tempo = ofMap(downPart.length, maxLine, minLine, minTempo, maxTempo) * mainTempo;
+    
+    tempo = ofMap( downPart.length, maxLine, minLine, maxSpeed, minSpeed );
+    synthMain.setParameter("tempo", tempo);
+
+    
     
     spacingLineDown = downPart.length / 10;
     spacingLineUp = downPart.length / 10;
@@ -286,7 +304,7 @@ void ofApp::phraseComplete(){
             
             if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
                 elementDown[dnIndex].onOffTrigger = true;
-//                elementDown[dnIndex].samplePlay.play();
+                elementDown[dnIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
                 elementDown[dnIndex].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
                 
@@ -307,7 +325,7 @@ void ofApp::phraseComplete(){
             
             if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
                 elementUp[upIndex].onOffTrigger = true;
-//                elementUp[upIndex].samplePlay.play();
+                elementUp[upIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
                 elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
                 
@@ -1008,8 +1026,6 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchMoved(ofTouchEventArgs & touch){
     
-    float _tempo = ofMap( touch.y, 0, screenH, maxSpeed, minSpeed );
-    synthMain.setParameter("tempo", _tempo);
     
     cout << touch.y << endl;
 

@@ -5,7 +5,7 @@
 #include "ofxiOSExtras.h"
 #include "WavFile.h"
 
-#include "ThreadedObject.h"
+//#include "ThreadedObject.h"
 
 #include "ofxTonic.h"
 
@@ -153,7 +153,7 @@ public:
     ofVec2f touchPos;
     
     // Thread
-    ThreadedObject threadedObject;
+//    ThreadedObject threadedObject;
     float tempo;
     void phraseComplete();
     int calculateNoteDuration();
