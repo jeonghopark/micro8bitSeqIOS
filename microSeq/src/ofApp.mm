@@ -185,7 +185,8 @@ void ofApp::update(){
     
     //    ofSoundUpdate();
     dnIndex = indexCounterDn%8;
-    upIndex = indexCounterDn%8;
+    upIndex = indexCounterUp%8;
+        
     float _recBlockPosCh = recBlockSize;
     
     downPart.recBlockPos = ofVec2f(downPart.onOffRectPos.x-_recBlockPosCh, ofGetHeight()*0.5+ofGetHeight()*0.1);
@@ -252,7 +253,7 @@ void ofApp::phraseComplete(){
             
             dnIndex = indexCounterDn%8;
             
-            if ((elementDown[dnIndex].soundTrigger)&&downPart.bBeingClick){
+            if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
                 elementDown[dnIndex].onOffTrigger = true;
                 elementDown[dnIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
@@ -271,9 +272,9 @@ void ofApp::phraseComplete(){
         if (mainStartStop) {
             indexCounterUp++;
             
-            upIndex = indexCounterDn%8;
+            upIndex = indexCounterUp%8;
             
-            if ((elementUp[upIndex].soundTrigger)&&upPart.bBeingClick){
+            if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
                 elementUp[upIndex].onOffTrigger = true;
                 elementUp[upIndex].samplePlay.play();
                 float _volRandom = ofRandom(0.35,1.0);
