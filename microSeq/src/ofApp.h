@@ -24,8 +24,8 @@ typedef struct{
     bool 	bBeingClick;
     bool 	bLengthOver;
     bool 	bOnOffOver;
-    ofVec2f onOffRectPos;
-    ofVec2f pitchRectPos;
+    ofVec2f onOffPos;
+    ofVec2f pitchPos;
     bool onOffTrigger;
     bool soundTrigger;
     int counter;
@@ -40,8 +40,8 @@ typedef struct{
     bool 	bBeingClick;
     bool 	bLengthOver;
     bool 	bOnOffOver;
-    ofVec2f onOffRectPos;
-    ofVec2f lengthRectPos;
+    ofVec2f onOffPos;
+    ofVec2f lengthPos;
     float length;
     ofVec2f delayPos;
     bool 	bDelayPosOver;
@@ -209,14 +209,18 @@ public:
     void noteTrigger();
 
     //New Control
-    float secondPatternStartPos;
-    float secondPatternEndPos;
-    
-    float secondPatternValue;
-    int movingFactor;
+    float delayTouchDownPos;
+    float delayTouchMovingPos;
+    float delayValueSaved;
     float delayValue;
+    int movingFactor;
     
-    
+    float tempoTouchDownPos;
+    float tempoTouchMovingPos;
+    float tempoValueSaved;
+    float tempoValue;
+    int tempoMovingFactor;
+
 };
 
 
