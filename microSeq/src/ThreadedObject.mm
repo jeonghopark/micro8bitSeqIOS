@@ -7,7 +7,7 @@
 //
 
 #include "ThreadedObject.h"
-#include "ofApp.h"
+//#include "ofApp.h"
 
 
 //--------------------------
@@ -59,7 +59,7 @@ void ThreadedObject::threadedFunction(){
             if (notes >= notesPerPhrase) {
                 
                 // Call function on main app
-                parent->phraseComplete();
+//                parent->phraseComplete();
                 
                 // Reset count
                 notes = 0;
@@ -69,7 +69,7 @@ void ThreadedObject::threadedFunction(){
             }
             
             // Sleep for duration of one note
-            ofSleepMillis(parent->calculateNoteDuration());
+//            ofSleepMillis(parent->calculateNoteDuration());
         }
     }
 }

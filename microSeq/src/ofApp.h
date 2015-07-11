@@ -138,8 +138,6 @@ public:
     
     void recordingLineDraw(ofVec2f _vP);
     
-    void fadeInBackground();
-    
     float randomY[16];
     
     int ctrlRectSize;
@@ -156,7 +154,7 @@ public:
 //    ThreadedObject threadedObject;
     float tempo;
     void phraseComplete();
-    int calculateNoteDuration();
+//    int calculateNoteDuration();
     
     int thredCounter;
     int indexCounterDn;
@@ -166,7 +164,9 @@ public:
     int dnIndex;
     
     // Menu
-    void menuDraw();
+    void recordDraw();
+    void sampleChangeDraw();
+    void stopStartDraw();
     void menuSetting();
     ofRectangle sampleChange;
     ofRectangle mainMenu;
@@ -207,8 +207,15 @@ public:
     int index;
     int noteIndex;
     void noteTrigger();
-    ofSoundPlayer tap;
 
+    //New Control
+    float secondPatternStartPos;
+    float secondPatternEndPos;
+    
+    float secondPatternValue;
+    int movingFactor;
+    float delayValue;
+    
     
 };
 
