@@ -133,7 +133,7 @@ public:
     
     ofDirectory dir;
     
-    void drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos);
+    void drawMainLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos);
     
     
     void recordingLineDraw(ofVec2f _vP);
@@ -169,11 +169,11 @@ public:
     void stopStartDraw();
     void menuSetting();
     ofRectangle sampleChange;
-    ofRectangle mainMenu;
+    ofRectangle mainStartStop;
     ofRectangle waveRecord;
     ofVec2f waveRecordPos;
     bool sampleChangeMenu;
-    bool mainStartStop;
+    bool bMainStartStop;
     int mainTempo;
     bool bWaveRect;
     

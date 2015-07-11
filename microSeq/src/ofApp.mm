@@ -72,11 +72,11 @@ void ofApp::setup(){
     
     sampleRecordingTime = 320;
     
-    mainStartStop = true;
+    bMainStartStop = true;
     mainTempo = 1;
     
     for (int i=0; i<16; i++) {
-        randomY[i] = ofRandom(50 * 2, screenW * 2/5);
+        randomY[i] = ofRandom(50 * 2, screenH * 2/5);
     }
     
     //    downPart.length = ofGetWidth()*4/8;
@@ -126,7 +126,7 @@ void ofApp::setup(){
         spacingLineDown = downPart.length / 10;
         elementDown[i].position = ofVec2f(spacingLineDown + spacingLineDown * 0.5 + spacingLineDown*i,
                                           downPart.onOffPos.y);
-        elementDown[i].pitchPos = ofVec2f(elementDown[i].position.x, elementDown[i].position.y+randomY[i]);
+        elementDown[i].pitchPos = ofVec2f(elementDown[i].position.x, elementDown[i].position.y + randomY[i]);
         elementDown[i].onOffPos = elementDown[i].pitchPos * ofVec2f(1, -1) + ofVec2f(0, screenH);
         elementDown[i].triggerColor = 120;
         
@@ -142,7 +142,7 @@ void ofApp::setup(){
         spacingLineUp = upPart.length / 10;
         elementUp[i].position = ofVec2f(spacingLineUp + spacingLineUp * 0.5 + spacingLineUp*i,
                                         upPart.onOffPos.y);
-        elementUp[i].pitchPos = ofVec2f(elementUp[i].position.x, elementUp[i].position.y-randomY[i+8]);
+        elementUp[i].pitchPos = ofVec2f(elementUp[i].position.x, elementUp[i].position.y - randomY[i+8]);
         elementUp[i].onOffPos = elementUp[i].pitchPos * ofVec2f(1,-1) + ofVec2f(0, screenH);
         elementUp[i].triggerColor = 120;
     }
@@ -257,7 +257,7 @@ void ofApp::phraseComplete(){
     }
     
     if (thredCounter%2==0) {
-        if (mainStartStop) {
+        if (bMainStartStop) {
             indexCounterDn++;
             
             dnIndex = indexCounterDn%8;
@@ -278,7 +278,7 @@ void ofApp::phraseComplete(){
     
     
     if ((thredCounter+delayupPart)%2==0) {
-        if (mainStartStop) {
+        if (bMainStartStop) {
             indexCounterUp++;
             
             upIndex = indexCounterUp%8;
@@ -331,7 +331,7 @@ void ofApp::downPartDraw(){
     ofPushMatrix();
     ofTranslate(0, ofGetHeight()*0.5);
     
-    drawingTempoLine(downPart.bBeingClick, downPart.bLengthOver, downPart.bOnOffOver,
+    drawMainLine(downPart.bBeingClick, downPart.bLengthOver, downPart.bOnOffOver,
                      downPart.lengthPos + ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos + ofVec2f(0, ctrlRectSize * 0.5));
     
     ofPushStyle();
@@ -424,9 +424,8 @@ void ofApp::upPartDraw() {
     ofPushMatrix();
     ofTranslate(0, ofGetHeight()*0.5);
     
-    drawingTempoLine(upPart.bBeingClick, upPart.bLengthOver, upPart.bOnOffOver,
-                     upPart.lengthPos-ofVec2f(0,ctrlRectSize*0.5),
-                     downPart.onOffPos-ofVec2f(0,ctrlRectSize*0.5));
+    drawMainLine(upPart.bBeingClick, upPart.bLengthOver, upPart.bOnOffOver,
+                     downPart.lengthPos - ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos - ofVec2f(0, ctrlRectSize * 0.5));
     
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
@@ -572,7 +571,7 @@ void ofApp::touchGuideLine(){
 
 
 //--------------------------------------------------------------
-void ofApp::drawingTempoLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos) {
+void ofApp::drawMainLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofVec2f _vTSizePos, ofVec2f _vTOnOffPos) {
     
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
@@ -653,33 +652,33 @@ void ofApp::stopStartDraw(){
     ofPushMatrix();
     ofPushStyle();
     
-    //    ofTranslate(menuStartRectSpacing, 0);
-    //    ofTranslate(menuStartRectSpacing + menuStartRectSize * 0.5, ofGetHeight() * 0.5);
-    //
-    //    int rotateOnOff = dnIndex%2;
-    //    if (rotateOnOff==0) {
-    //        ofRotateZ(0);
-    //    } else {
-    //        ofRotateZ(-45);
-    //    }
-    //
-    //    ofTranslate(-menuStartRectSpacing - menuStartRectSize * 0.5, -ofGetHeight() * 0.5);
+    ofTranslate(menuStartRectSpacing, 0);
+    ofTranslate(menuStartRectSpacing + menuStartRectSize * 0.5, screenH * 0.5);
     
-    if (mainStartStop) {
-        mainStartStop = true;
+    int rotateOnOff = dnIndex % 2;
+    if (rotateOnOff==0) {
+        ofRotateZ(0);
     } else {
-        mainStartStop = false;
+        ofRotateZ(-45);
+    }
+    
+    ofTranslate(-menuStartRectSpacing - menuStartRectSize * 0.5, -screenH * 0.5);
+    
+    if (bMainStartStop) {
+        bMainStartStop = true;
+    } else {
+        bMainStartStop = false;
         thredCounter = 0;
         indexCounterDn = 0;
         indexCounterUp = 0;
         ofFill();
         ofSetColor(ofColor::fromHsb(0, 0, 255, 40));
-        ofDrawRectangle(mainMenu);
+        ofDrawRectangle(mainStartStop);
     }
     
     ofNoFill();
     ofSetColor(ofColor::fromHsb(0, 0, 255, 220));
-    ofDrawRectangle(mainMenu);
+    ofDrawRectangle(mainStartStop);
     ofPopStyle();
     ofPopMatrix();
     
@@ -914,7 +913,7 @@ bool ofApp::onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b){
 //--------------------------------------------------------------
 void ofApp::menuSetting(){
     
-    mainMenu.set(menuStartRectSpacing, screenH * 0.5 - menuStartRectSize * 0.5, menuStartRectSize, menuStartRectSize);
+    mainStartStop.set(menuStartRectSpacing, screenH * 0.5 - menuStartRectSize * 0.5, menuStartRectSize, menuStartRectSize);
     
     sampleChange.set( screenW - menuStartRectSize - menuStartRectSpacing, screenH * 0.5 - menuStartRectSize * 0.5,
                      menuStartRectSize, menuStartRectSize);
@@ -1024,7 +1023,6 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchMoved(ofTouchEventArgs & touch){
     
-    
     //    ofVec2f _touchCaP = ofVec2f(touch.x-22, touch.y);
     ofVec2f _touchCaP = ofVec2f(touch.x, touch.y);
     
@@ -1038,7 +1036,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     } else if (touch.y > screenH * (0.5 + _torelance)) {
         if (!downPart.bLengthBeingDragged) {
             tempoTouchMovingPos = touch.x;
-            float _movingSecond = tempoTouchMovingPos - tempoTouchDownPos;
+            float _movingSecond = - tempoTouchMovingPos + tempoTouchDownPos;
             tempoValue = ofClamp(tempoValueSaved + _movingSecond, minLine, maxLine);
             downPart.lengthPos.x = tempoValue;
         }
@@ -1058,8 +1056,6 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
             elementDown[i].pitchPos.y = _yPos - screenH*0.5;
         }
     }
-    
-    cout << downPart.bLengthBeingDragged << endl;
     
     for (int i = 0; i < nElementLine; i++){
         if (elementUp[i].bLengthBeingDragged == true){
@@ -1081,8 +1077,9 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
     
     ofVec2f _inputSampleChange = ofVec2f(touch.x, touch.y);
     
-    if (mainMenu.inside(_inputSampleChange)) {
-        mainStartStop = !mainStartStop;
+    float _dist = ofDist(mainStartStop.getCenter().x, mainStartStop.getCenter().y, _inputSampleChange.x, _inputSampleChange.y);
+    if ( _dist < mainStartStop.width * 1.5) {
+        bMainStartStop = !bMainStartStop;
     }
     
     delayTouchDownPos = 0;
