@@ -166,14 +166,14 @@ public:
     
     // Menu
     void recordDraw();
-    void sampleChangeDraw();
+    void drawSampleChangeButton();
     void stopStartDraw();
     void menuSetting();
-    ofRectangle sampleChange;
+    ofRectangle sampleChangeButton;
     ofRectangle mainStartStop;
     ofRectangle waveRecord;
     ofVec2f waveRecordPos;
-    bool sampleChangeMenu;
+    bool bSampleChange;
     bool bMainStartStop;
     int mainTempo;
     bool bWaveRect;
@@ -189,7 +189,7 @@ public:
     
     float upIndexOldTimer;
     
-    int menuStartRectSize, menuStartRectSpacing;
+    int menuStartStopSize, menuStartRectSpacing;
     
     // MODE
     bool debugMode;

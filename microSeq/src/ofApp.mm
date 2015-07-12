@@ -26,10 +26,10 @@ void ofApp::setup(){
     ofAddListener(* metroOut, this, &ofApp::triggerReceive);
     
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        menuStartRectSize = 40 * 2;
-        menuStartRectSpacing = 10 * 2;
+        menuStartStopSize = screenW * 0.04;
+        menuStartRectSpacing = screenW * 0.02;
 
-        ctrlRectSize = 22 * 2;
+        ctrlRectSize = screenW * 0.022;
 
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
@@ -37,7 +37,7 @@ void ofApp::setup(){
         downPart.length = screenW * 0.5;
         
     } else {
-        menuStartRectSize = ofGetWidth() / 51.2*4;
+        menuStartStopSize = ofGetWidth() / 51.2*4;
         menuStartRectSpacing = ofGetWidth() / 204.8*4;
         
         ctrlRectSize = 22 * 2;
@@ -156,7 +156,6 @@ void ofApp::setup(){
     
     tempo = ofMap( downPart.length, maxLine, minLine, minSpeed, maxSpeed );
     
-    
     menuSetting();
     
     minRecordRectPosX = screenW * 0.1347;
@@ -209,8 +208,6 @@ void ofApp::update(){
     tempo = ofMap( downPart.length, maxLine, minLine, minSpeed, maxSpeed );
     synthMain.setParameter("tempo", tempo);
     
-    
-    
     spacingLineDown = downPart.length / 10;
     spacingLineUp = downPart.length / 10;
     
@@ -237,7 +234,7 @@ void ofApp::update(){
     downPart.bDownSoundRecordPos = ofVec2f( downPart.recBlockPos.x, downPart.recBlockPos.y-(recBlockSize-1)*0.5 );
     upPart.bDownSoundRecordPos = ofVec2f( upPart.recBlockPos.x, upPart.recBlockPos.y-(recBlockSize-1)*0.5 );
     
-    waveRecordPos = ofVec2f( downPart.onOffPos.x-menuStartRectSize+ctrlRectSize*0.5*0.5, ofGetHeight()*0.5-menuStartRectSize*0.5 );
+    waveRecordPos = ofVec2f( downPart.onOffPos.x-menuStartStopSize+ctrlRectSize*0.5*0.5, ofGetHeight()*0.5-menuStartStopSize*0.5 );
     
 }
 
@@ -265,6 +262,19 @@ void ofApp::phraseComplete(){
     int _shiftMinIndex;
     int _shiftMaxIndex;
     switch (delayupPart) {
+
+        case -2:
+            _indexMatch = 0;
+            _shiftMinIndex = 2;
+            _shiftMaxIndex = 7;
+            break;
+            
+        case -1:
+            _indexMatch = 1;
+            _shiftMinIndex = 1;
+            _shiftMaxIndex = 7;
+            break;
+
         case 0:
             _indexMatch = 0;
             _shiftMinIndex = 0;
@@ -282,18 +292,6 @@ void ofApp::phraseComplete(){
             _indexMatch = 0;
             _shiftMinIndex = 0;
             _shiftMaxIndex = 5;
-            break;
-
-        case -1:
-            _indexMatch = 1;
-            _shiftMinIndex = 1;
-            _shiftMaxIndex = 7;
-            break;
-
-        case -2:
-            _indexMatch = 0;
-            _shiftMinIndex = 2;
-            _shiftMaxIndex = 7;
             break;
 
         default:
@@ -360,11 +358,11 @@ void ofApp::draw(){
     upPartDraw();
     
     if (bWaveRect){
-        recordingLineDraw(waveRecordPos-menuStartRectSize);
+        recordingLineDraw(waveRecordPos-menuStartStopSize);
     }
     
     recordDraw();
-    sampleChangeDraw();
+    drawSampleChangeButton();
     stopStartDraw();
     
 }
@@ -664,7 +662,7 @@ void ofApp::drawMainLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofV
 }
 
 //--------------------------------------------------------------
-void ofApp::sampleChangeDraw(){
+void ofApp::drawSampleChangeButton(){
     
     ofPushMatrix();
     ofPushStyle();
@@ -674,14 +672,14 @@ void ofApp::sampleChangeDraw(){
     
     ofPushStyle();
     
-    if (sampleChangeMenu) {
+    if (bSampleChange) {
         ofSetColor( ofColor::fromHsb(0, 0, 230, 70) );
         ofFill();
-        ofDrawRectangle( sampleChange );
-        sampleChangeMenu = false;
+        ofDrawRectangle( sampleChangeButton );
+        bSampleChange = false;
     }
     
-    ofDrawRectangle(sampleChange);
+    ofDrawRectangle( sampleChangeButton );
     
     ofPopStyle();
     
@@ -697,8 +695,7 @@ void ofApp::stopStartDraw(){
     ofPushMatrix();
     ofPushStyle();
     
-    ofTranslate(menuStartRectSpacing, 0);
-    ofTranslate(menuStartRectSpacing + menuStartRectSize * 0.5, screenH * 0.5);
+    ofTranslate(menuStartRectSpacing + menuStartStopSize * 0.5, screenH * 0.5);
     
     int rotateOnOff = dnIndex % 2;
     if (rotateOnOff==0) {
@@ -707,7 +704,7 @@ void ofApp::stopStartDraw(){
         ofRotateZ(-45);
     }
     
-    ofTranslate(-menuStartRectSpacing - menuStartRectSize * 0.5, -screenH * 0.5);
+    ofTranslate(-menuStartRectSpacing - menuStartStopSize * 0.5, -screenH * 0.5);
     
     if (bMainStartStop) {
         bMainStartStop = true;
@@ -739,9 +736,9 @@ void ofApp::recordDraw(){
     
     ofNoFill();
     ofSetColor(ofColor::fromHsb(0, 0, 255, 220));
-    ofDrawRectangle( waveRecordPos, menuStartRectSize, menuStartRectSize );
+    ofDrawRectangle( waveRecordPos, menuStartStopSize, menuStartStopSize );
     
-    ofDrawRectangle( screenW - waveRecordPos.x - menuStartRectSize, waveRecordPos.y, menuStartRectSize, menuStartRectSize );
+    ofDrawRectangle( screenW - waveRecordPos.x - menuStartStopSize, waveRecordPos.y, menuStartStopSize, menuStartStopSize );
     
     ofPopStyle();
     ofPopMatrix();
@@ -813,14 +810,14 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     ofPushMatrix();
     ofPushStyle();
     
-    ofVec2f _pos = waveRecordPos - ofVec2f( menuStartRectSize*0.5, -menuStartRectSize*0.5 );
+    ofVec2f _pos = waveRecordPos - ofVec2f( menuStartStopSize*0.5, -menuStartStopSize*0.5 );
     float _volumeParameter = screenH * 0.05;
     float _volumePre = 1;
     int _indexBuffer = (int)(buffer[0] * _volumePre * _volumeParameter);
     
     ofTranslate( _pos );
     
-    float _volumeWidth = menuStartRectSize * 0.4;
+    float _volumeWidth = menuStartStopSize * 0.4;
     
     int _lineThick = 3;
     
@@ -958,13 +955,14 @@ bool ofApp::onOffOut(ofVec2f input, ofVec2f xyN, int distSize, bool _b){
 //--------------------------------------------------------------
 void ofApp::menuSetting(){
     
-    mainStartStop.set(menuStartRectSpacing, screenH * 0.5 - menuStartRectSize * 0.5, menuStartRectSize, menuStartRectSize);
+    float _yPos = screenH * 0.5 - menuStartStopSize * 0.5;
+    float _size = menuStartStopSize;
     
-    sampleChange.set( screenW - menuStartRectSize - menuStartRectSpacing, screenH * 0.5 - menuStartRectSize * 0.5,
-                     menuStartRectSize, menuStartRectSize);
+    mainStartStop.set( menuStartRectSpacing, _yPos, _size, _size );
+    sampleChangeButton.set( screenW - menuStartStopSize - menuStartRectSpacing, _yPos, _size, _size );
     
-    //    ofPoint _waveRecord = ofPoint( downPart.onOffPos.x-menuStartRectSize, ofGetHeight()*0.5 );
-    //    waveRecord.set( _waveRecord, menuStartRectSize, menuStartRectSize );
+    //    ofPoint _waveRecord = ofPoint( downPart.onOffPos.x-menuStartStopSize, ofGetHeight()*0.5 );
+    //    waveRecord.set( _waveRecord, menuStartStopSize, menuStartStopSize );
     
 }
 
@@ -1013,7 +1011,7 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     //    upPart.bBeingClick = onOffOut(_yUpInputForCtrl, upPart.onOffPos, ctrlRectSize, upPart.bBeingClick);
     upPart.bLengthBeingDragged = inOutCal(_yUpInputForCtrl, upPart.lengthPos, ctrlRectSize);
     
-    bWaveRect = onOffOut( _touchCaP, _waveRectPos + ofVec2f(menuStartRectSize,menuStartRectSize)*0.5, menuStartRectSize, bWaveRect );
+    bWaveRect = onOffOut( _touchCaP, _waveRectPos + ofVec2f(menuStartStopSize,menuStartStopSize)*0.5, menuStartStopSize, bWaveRect );
     
     //    downPart.bDownSoundRecordClick = onOffOut(_yDnInput, _dnRecPos, recBlockSize, downPart.bDownSoundRecordClick);
     //    upPart.bDownSoundRecordClick = onOffOut(_yUpInput, _upRecPos, recBlockSize, upPart.bDownSoundRecordClick);
@@ -1035,8 +1033,8 @@ void ofApp::touchDown(ofTouchEventArgs & touch){
     
     ofVec2f _inputSampleChange = ofVec2f(touch.x, touch.y);
     
-    if (sampleChange.inside(_inputSampleChange)) {
-        sampleChangeMenu = true;
+    if (sampleChangeButton.inside(_inputSampleChange)) {
+        bSampleChange = true;
         downPart.bChangeSampleClick = true;
         upPart.bChangeSampleClick = true;
     }
