@@ -28,7 +28,9 @@ void ofApp::setup(){
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         menuStartRectSize = 40 * 2;
         menuStartRectSpacing = 10 * 2;
-        
+
+        ctrlRectSize = 22 * 2;
+
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
         
@@ -38,6 +40,8 @@ void ofApp::setup(){
         menuStartRectSize = ofGetWidth() / 51.2*4;
         menuStartRectSpacing = ofGetWidth() / 204.8*4;
         
+        ctrlRectSize = 22 * 2;
+
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
         
@@ -68,7 +72,6 @@ void ofApp::setup(){
     
     startTime = ofGetElapsedTimef();
     
-    ctrlRectSize = 22 * 2;
     
     sampleRecordingTime = 320;
     
@@ -162,7 +165,8 @@ void ofApp::setup(){
     
     volumeParameter = screenW * 0.05;
     
-    thredCounter = 0;
+    threadDownCounter = 0;
+    threadUpCounter = 0;
     indexCounterDn = 0;
     indexCounterUp = 0;
     
@@ -179,16 +183,6 @@ void ofApp::setup(){
     
 }
 
-
-//--------------------------------------------------------------
-void ofApp::triggerReceive(float & metro){
-    
-    index++;
-    noteIndex = index;
-    
-    phraseComplete();
-    
-}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -247,20 +241,71 @@ void ofApp::update(){
     
 }
 
+
+//--------------------------------------------------------------
+void ofApp::triggerReceive(float & metro){
+    
+    threadDownCounter++;
+    threadUpCounter++;
+    
+    threadDownCounter %= 2;
+    threadUpCounter %= 2;
+
+    phraseComplete();
+    
+    
+}
+
+
 //--------------------------------------------------------------
 void ofApp::phraseComplete(){
     
-    thredCounter++;
     
-    if(thredCounter>15) {
-        thredCounter = 0;
+    int _indexMatch;
+    int _shiftMinIndex;
+    int _shiftMaxIndex;
+    switch (delayupPart) {
+        case 0:
+            _indexMatch = 0;
+            _shiftMinIndex = 0;
+            _shiftMaxIndex = 7;
+            indexCounterUp = indexCounterDn;
+            break;
+
+        case 1:
+            _indexMatch = 1;
+            _shiftMinIndex = 0;
+            _shiftMaxIndex = 6;
+            break;
+
+        case 2:
+            _indexMatch = 0;
+            _shiftMinIndex = 0;
+            _shiftMaxIndex = 5;
+            break;
+
+        case -1:
+            _indexMatch = 1;
+            _shiftMinIndex = 1;
+            _shiftMaxIndex = 7;
+            break;
+
+        case -2:
+            _indexMatch = 0;
+            _shiftMinIndex = 2;
+            _shiftMaxIndex = 7;
+            break;
+
+        default:
+            break;
     }
     
-    if (thredCounter%2==0) {
+    
+    if ((threadDownCounter) == 0) {
         if (bMainStartStop) {
             indexCounterDn++;
             
-            dnIndex = indexCounterDn%8;
+            dnIndex = indexCounterDn % 8;
             
             if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
                 elementDown[dnIndex].onOffTrigger = true;
@@ -276,12 +321,12 @@ void ofApp::phraseComplete(){
         }
     }
     
-    
-    if ((thredCounter+delayupPart)%2==0) {
+    if ((threadDownCounter) == _indexMatch) {
         if (bMainStartStop) {
             indexCounterUp++;
             
-            upIndex = indexCounterUp%8;
+            upIndex = (indexCounterUp) % 8;
+            upIndex = ofClamp(upIndex, _shiftMinIndex, _shiftMaxIndex);
             
             if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
                 elementUp[upIndex].onOffTrigger = true;
@@ -668,7 +713,7 @@ void ofApp::stopStartDraw(){
         bMainStartStop = true;
     } else {
         bMainStartStop = false;
-        thredCounter = 0;
+        threadDownCounter = 0;
         indexCounterDn = 0;
         indexCounterUp = 0;
         ofFill();
@@ -1026,7 +1071,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     //    ofVec2f _touchCaP = ofVec2f(touch.x-22, touch.y);
     ofVec2f _touchCaP = ofVec2f(touch.x, touch.y);
     
-    float _torelance = 0.1;
+    float _torelance = 0.05;
     if (touch.y < screenH * (0.5 - _torelance)) {
         delayTouchMovingPos = touch.x;
         float _movingSecond = delayTouchMovingPos - delayTouchDownPos;

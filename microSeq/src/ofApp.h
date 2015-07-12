@@ -156,7 +156,8 @@ public:
     void phraseComplete();
 //    int calculateNoteDuration();
     
-    int thredCounter;
+    int threadDownCounter;
+    int threadUpCounter;
     int indexCounterDn;
     int indexCounterUp;
     

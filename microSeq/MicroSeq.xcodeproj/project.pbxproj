@@ -13,7 +13,6 @@
 		5326AEA810A23A0500278DE6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5326AEA710A23A0500278DE6 /* CoreLocation.framework */; };
 		53F323EB10A20EDB00E0DAE4 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53F323EA10A20EDB00E0DAE4 /* OpenAL.framework */; };
 		67DFA53619F92A69003B3434 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67DFA53419F92A5E003B3434 /* Accelerate.framework */; };
-		93D955F993C4FEC90A52FA6F /* ThreadedObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = DE71F3D02D4767C982B58BC3 /* ThreadedObject.mm */; };
 		A8C5BB171B43E2B300B2F5ED /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8C5BB161B43E2B300B2F5ED /* Images.xcassets */; };
 		A8DDDD411B4F0ED90069ADED /* ofxTonicSynth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DDDCC51B4F0ED90069ADED /* ofxTonicSynth.cpp */; };
 		A8DDDD421B4F0ED90069ADED /* ADSR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DDDCC81B4F0ED90069ADED /* ADSR.cpp */; };
@@ -241,7 +240,6 @@
 		BB16EBD80F2B2AB500518274 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BB24DDC910DA781C00E9C588 /* ofxiOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ofxiOS-Info.plist"; sourceTree = "<group>"; };
 		BBE5EAB70F49AD8400F28951 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		DE71F3D02D4767C982B58BC3 /* ThreadedObject.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = ThreadedObject.mm; path = src/ThreadedObject.mm; sourceTree = SOURCE_ROOT; };
 		E41D3ED613B38FB500A75A5D /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		E41D3EE513B3906D00A75A5D /* CoreOF.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = CoreOF.xcconfig; path = ../../../../openFrameworks/libs/openFrameworksCompiled/project/ios/CoreOF.xcconfig; sourceTree = SOURCE_ROOT; };
 		E41D400613B39D2100A75A5D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -253,7 +251,6 @@
 		E4D8936B11527B74007E1F53 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = src/main.mm; sourceTree = SOURCE_ROOT; };
 		E4D8936C11527B74007E1F53 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofApp.h; path = src/ofApp.h; sourceTree = SOURCE_ROOT; };
 		E4D8936D11527B74007E1F53 /* ofApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ofApp.mm; path = src/ofApp.mm; sourceTree = SOURCE_ROOT; };
-		F24B61E5A26F5489C2F4755A /* ThreadedObject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ThreadedObject.h; path = src/ThreadedObject.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -520,8 +517,6 @@
 				E4D8936B11527B74007E1F53 /* main.mm */,
 				E4D8936D11527B74007E1F53 /* ofApp.mm */,
 				E4D8936C11527B74007E1F53 /* ofApp.h */,
-				F24B61E5A26F5489C2F4755A /* ThreadedObject.h */,
-				DE71F3D02D4767C982B58BC3 /* ThreadedObject.mm */,
 				B99D2CE75CACD7B2903FA59D /* WavFile.h */,
 			);
 			path = src;
@@ -675,7 +670,6 @@
 				A8DDDD7A1B4F0ED90069ADED /* TableLookupOsc.cpp in Sources */,
 				A8DDDD761B4F0ED90069ADED /* SawtoothWave.cpp in Sources */,
 				A8DDDD4B1B4F0ED90069ADED /* CompressorLimiter.cpp in Sources */,
-				93D955F993C4FEC90A52FA6F /* ThreadedObject.mm in Sources */,
 				A8DDDD471B4F0ED90069ADED /* BLEPOscillator.cpp in Sources */,
 				A8DDDD481B4F0ED90069ADED /* BufferFiller.cpp in Sources */,
 				A8DDDD641B4F0ED90069ADED /* ControlXYSpeed.cpp in Sources */,
