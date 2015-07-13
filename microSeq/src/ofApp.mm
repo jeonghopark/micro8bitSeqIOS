@@ -31,8 +31,8 @@ void ofApp::setup(){
 
         ctrlRectSize = screenW * 0.022;
 
-        maxLine = screenW * 0.85;
-        minLine = screenW * 0.67;
+        maxLine = screenW * 0.85; // 1740.8
+        minLine = screenW * 0.67; // 1372.16
         
         downPart.length = screenW * 0.5;
         
@@ -52,8 +52,10 @@ void ofApp::setup(){
     ofxAccelerometer.setup();
     ofxMultiTouch.addListener(this);
     
-    backgroundColorHue = ofRandom(0,255);
-    ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
+    backgroundColorHue = ofRandom(0, 255);
+//    ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
+//    ofBackground( 118, 192, 194	);
+    ofBackground( 76, 163, 116 );
     
     initialBufferSize = 256;
     sampleRate = 44100;
@@ -76,7 +78,7 @@ void ofApp::setup(){
     sampleRecordingTime = 320;
     
     bMainStartStop = true;
-    mainTempo = 1;
+    bWaveRect = false;
     
     for (int i=0; i<16; i++) {
         randomY[i] = ofRandom(50 * 2, screenH * 2/5);
@@ -151,18 +153,15 @@ void ofApp::setup(){
     }
     
     rectSizeRatio = 0.5;
-    
     recBlockSize = initialBufferSize * 0.5;
     
-    tempo = ofMap( downPart.length, maxLine, minLine, minSpeed, maxSpeed );
+    tempo = ofMap( downPart.lengthPos.x, maxLine, minLine, minSpeed, maxSpeed );
     
     menuSetting();
     
     minRecordRectPosX = screenW * 0.1347;
     
     debugMode = false;
-    
-    volumeParameter = screenW * 0.05;
     
     threadDownCounter = 0;
     threadUpCounter = 0;
@@ -176,8 +175,9 @@ void ofApp::setup(){
     delayValueSaved = 0;
     delayupPart = 0;
     
-    tempoValueSaved = 0;
-    
+    tempoValueSaved = 1536;
+    tempoValue = 1536;
+
     ofSoundStreamSetup(2, 0, this, 44100, 256, 4);
     
 }
@@ -978,6 +978,8 @@ void ofApp::exit(){
         elementUp[i].samplePlay.unload();
     }
     
+//    std::exit(0);
+    
 }
 
 
@@ -1069,6 +1071,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
     //    ofVec2f _touchCaP = ofVec2f(touch.x-22, touch.y);
     ofVec2f _touchCaP = ofVec2f(touch.x, touch.y);
     
+    
     float _torelance = 0.05;
     if (touch.y < screenH * (0.5 - _torelance)) {
         delayTouchMovingPos = touch.x;
@@ -1077,7 +1080,7 @@ void ofApp::touchMoved(ofTouchEventArgs & touch){
         delayValue = ofClamp(delayValueSaved + movingFactor, -2, 2);
         delayupPart = delayValue;
     } else if (touch.y > screenH * (0.5 + _torelance)) {
-        if (!downPart.bLengthBeingDragged) {
+        if ( !downPart.bLengthBeingDragged ) {
             tempoTouchMovingPos = touch.x;
             float _movingSecond = - tempoTouchMovingPos + tempoTouchDownPos;
             tempoValue = ofClamp(tempoValueSaved + _movingSecond, minLine, maxLine);

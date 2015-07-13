@@ -71,9 +71,9 @@ controlTempoLine;
 
 class ofApp : public ofxiOSApp{
     
-    ofxTonicSynth synth1;
+    ofxTonicSynth synth;
     ofxTonicSynth synthMain;
-
+    
     
 public:
     void setup();
@@ -151,10 +151,10 @@ public:
     ofVec2f touchPos;
     
     // Thread
-//    ThreadedObject threadedObject;
+    //    ThreadedObject threadedObject;
     float tempo;
     void phraseComplete();
-//    int calculateNoteDuration();
+    //    int calculateNoteDuration();
     
     int threadDownCounter;
     int threadUpCounter;
@@ -175,7 +175,6 @@ public:
     ofVec2f waveRecordPos;
     bool bSampleChange;
     bool bMainStartStop;
-    int mainTempo;
     bool bWaveRect;
     
     //tempo
@@ -187,15 +186,13 @@ public:
     float minRecordRectPosX;
     float sampleRecordingTime;
     
-    float upIndexOldTimer;
     
     int menuStartStopSize, menuStartRectSpacing;
     
     // MODE
     bool debugMode;
     void debugModeView(int _i, string _pos);
-  
-    float volumeParameter;
+    
     
     // Tonic
     int screenW, screenH;
@@ -208,7 +205,7 @@ public:
     int index;
     int noteIndex;
     void noteTrigger();
-
+    
     //New Control
     float delayTouchDownPos;
     float delayTouchMovingPos;
@@ -221,7 +218,7 @@ public:
     float tempoValueSaved;
     float tempoValue;
     int tempoMovingFactor;
-
+    
 };
 
 
