@@ -16,7 +16,7 @@ void ofApp::setup(){
     synthSetting();
     maxSpeed = 80;
     minSpeed = 20;
-    bpm = synthMain.addParameter("tempo", 100).min(minSpeed).max(maxSpeed);
+    bpm = synthMain.addParameter("tempo", 70).min(minSpeed).max(maxSpeed);
     metro = ControlMetro().bpm(4 * bpm);
     metroOut = synthMain.createOFEvent(metro);
     //    synthMain.setOutputGen();
@@ -75,7 +75,7 @@ void ofApp::setup(){
     startTime = ofGetElapsedTimef();
     
     
-    sampleRecordingTime = 320;
+    sampleRecordingTime = 0.320;
     
     bMainStartStop = true;
     bWaveRect = false;
@@ -98,6 +98,7 @@ void ofApp::setup(){
     downPart.myWavWriter.setFormat(1, sampleRate, 16);
     downPart.onOffPos.x = -downPart.length*0.5 + screenW * 0.5;
     downPart.lengthPos.x = downPart.length*0.5 + screenW * 0.5;
+    downPart.timeStamp = 0;
     
     upPart.length = downPart.length;
     upPart.bBeingClick = true;
@@ -178,7 +179,7 @@ void ofApp::setup(){
     tempoValueSaved = 1536;
     tempoValue = 1536;
 
-    ofSoundStreamSetup(2, 0, this, 44100, 256, 4);
+    ofSoundStreamSetup(2, 1, this, 44100, 256, 4);
     
 }
 
@@ -242,56 +243,52 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::triggerReceive(float & metro){
     
-    threadDownCounter++;
     threadUpCounter++;
+    threadDownCounter++;
     
-    threadDownCounter %= 2;
     threadUpCounter %= 2;
-
-    phraseComplete();
-    
-    
-}
+    threadDownCounter %= 2;
 
 
-//--------------------------------------------------------------
-void ofApp::phraseComplete(){
-    
-    
-    int _indexMatch;
-    int _shiftMinIndex;
-    int _shiftMaxIndex;
+    int _matchInex;
+    int _shiftIndex;
+    int _min;
+    int _max;
     switch (delayupPart) {
-
+        
         case -2:
-            _indexMatch = 0;
-            _shiftMinIndex = 2;
-            _shiftMaxIndex = 7;
+            _matchInex = 0;
+            _shiftIndex = 1;
+            _min = 1;
+            _max = 7;
             break;
             
         case -1:
-            _indexMatch = 1;
-            _shiftMinIndex = 1;
-            _shiftMaxIndex = 7;
+            _matchInex = 1;
+            _shiftIndex = 1;
+            _min = 1;
+            _max = 7;
             break;
 
         case 0:
-            _indexMatch = 0;
-            _shiftMinIndex = 0;
-            _shiftMaxIndex = 7;
-            indexCounterUp = indexCounterDn;
+            _matchInex = 0;
+            _shiftIndex = 0;
+            _min = 0;
+            _max = 7;
             break;
 
         case 1:
-            _indexMatch = 1;
-            _shiftMinIndex = 0;
-            _shiftMaxIndex = 6;
+            _matchInex = 1;
+            _shiftIndex = 0;
+            _min = 0;
+            _max = 6;
             break;
-
+            
         case 2:
-            _indexMatch = 0;
-            _shiftMinIndex = 0;
-            _shiftMaxIndex = 5;
+            _matchInex = 0;
+            _shiftIndex = -1;
+            _min = 0;
+            _max = 6;
             break;
 
         default:
@@ -299,11 +296,54 @@ void ofApp::phraseComplete(){
     }
     
     
-    if ((threadDownCounter) == 0) {
+    if (threadDownCounter % 2 == 0) {
+        phraseDnComplete();
+    }
+
+    if (threadUpCounter % 2 == _matchInex) {
+        phraseUpComplete(_shiftIndex, _min, _max);
+    }
+
+    
+    
+}
+
+
+//--------------------------------------------------------------
+void ofApp::phraseUpComplete(int _index, int _min, int _max){
+    
+        if (bMainStartStop) {
+
+            upIndex = (dnIndex + _index) % 8;
+
+            if ((upIndex>=_min)&&(upIndex<=_max)) {
+                if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
+                    elementUp[upIndex].onOffTrigger = true;
+                    elementUp[upIndex].samplePlay.play();
+                    float _volRandom = ofRandom(0.35,1.0);
+                    elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+                    
+                    float _spdRandom = ofRandom(0.75,1.25);
+                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+                    float _value = _spdValueMap * _spdRandom;
+                    elementUp[upIndex].samplePlay.setSpeed(_value);
+                }
+            } else {
+                elementUp[upIndex].onOffTrigger = false;
+            }
+            
+        }
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::phraseDnComplete(){
+    
         if (bMainStartStop) {
             indexCounterDn++;
             
             dnIndex = indexCounterDn % 8;
+            
             
             if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
                 elementDown[dnIndex].onOffTrigger = true;
@@ -317,30 +357,11 @@ void ofApp::phraseComplete(){
                 elementDown[dnIndex].samplePlay.setSpeed(_value);
             }
         }
-    }
     
-    if ((threadDownCounter) == _indexMatch) {
-        if (bMainStartStop) {
-            indexCounterUp++;
-            
-            upIndex = (indexCounterUp) % 8;
-            upIndex = ofClamp(upIndex, _shiftMinIndex, _shiftMaxIndex);
-            
-            if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
-                elementUp[upIndex].onOffTrigger = true;
-                elementUp[upIndex].samplePlay.play();
-                float _volRandom = ofRandom(0.35,1.0);
-                elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-                
-                float _spdRandom = ofRandom(0.75,1.25);
-                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-                float _value = _spdValueMap * _spdRandom;
-                elementUp[upIndex].samplePlay.setSpeed(_value);
-            }
-        }
-    }
     
 }
+
+
 
 ////--------------------------------------------------------------
 //int ofApp::calculateNoteDuration() {
@@ -478,11 +499,11 @@ void ofApp::upPartDraw() {
     
     if (elementUp[upIndex].onOffTrigger) {
         if (!elementUp[upIndex].bBeingClick) {
-            elementUp[upIndex].triggerColor = 100;
+            elementUp[upIndex].triggerColor = 200;
         } else {
             elementUp[upIndex].triggerColor = 0;
         }
-        elementUp[upIndex].onOffTrigger = false;
+//        elementUp[upIndex].onOffTrigger = false;
     } else {
         elementUp[upIndex].triggerColor = 0;
     }
@@ -491,7 +512,7 @@ void ofApp::upPartDraw() {
     float _alpha;
     if (elementUp[upIndex].soundTrigger && upPart.bBeingClick) {
         ofFill();
-        _alpha = 200 + elementUp[upIndex].triggerColor;
+        _alpha = elementUp[upIndex].triggerColor;
         ofSetColor( ofColor::fromHsb(0, 0, 255 + _brightness, _alpha) );
         ofDrawLine( elementUp[upIndex].onOffPos + ofVec2f(0, -_size * 0.5),
                    elementUp[upIndex].pitchPos + ofVec2f(0, _size * 0.5) );
@@ -505,7 +526,7 @@ void ofApp::upPartDraw() {
     
     if (!elementUp[upIndex].bBeingClick) {
         ofNoFill();
-        _alpha = 170 + elementUp[upIndex].triggerColor;
+        _alpha = elementUp[upIndex].triggerColor;
         ofSetColor( ofColor::fromHsb(0, 0, _brightness, _alpha) );
     } else {
         //        ofFill();
@@ -847,22 +868,19 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
         
         ofPopStyle();
         
-        //        if ((abs(buffer[i+1]*50.0f)>5)&&!downPart.bDownSoundRecordClick){
-        //            downPart.startTime = ofGetElapsedTimeMillis();
-        //        }
-        //        if ((abs(buffer[i+1]*50.0f)>5)&&!upPart.bDownSoundRecordClick){
-        //            upPart.startTime = ofGetElapsedTimeMillis();
-        //        }
-        if ((abs(buffer[i+1]*50.0f)>10)){
+        
+        if ((abs(buffer[i+1]*50.0f)>5)){
             downPart.startTime = ofGetElapsedTimef();
-            //            upPart.startTime = ofGetElapsedTimeMillis();
         }
+
     }
     
     ofPopMatrix();
     
     downPart.recordingTime = sampleRecordingTime;
     downPart.timeStamp = ofGetElapsedTimef() - downPart.startTime;
+    
+    cout << downPart.timeStamp << endl;
     
     if ((downPart.timeStamp < downPart.recordingTime)){
         if (downPart.recordState==0){
@@ -878,7 +896,6 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
         downPart.bTimerReached = true;
         bWaveRect = false;
     }
-    
     
 }
 

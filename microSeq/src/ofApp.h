@@ -49,13 +49,13 @@ typedef struct{
     
     ofVec2f recBlockPos;
     float rectBlockAlphaFactor;
-    int recordingTime;
-    int startTime;
+    float recordingTime;
+    float startTime;
     
     WavFile myWavWriter;
     int recordState;
     bool bTimerReached;
-    int timeStamp;
+    float timeStamp;
     
     ofVec2f bDownSoundRecordPos;
     bool bDownSoundRecordClick;
@@ -153,7 +153,8 @@ public:
     // Thread
     //    ThreadedObject threadedObject;
     float tempo;
-    void phraseComplete();
+    void phraseUpComplete(int _index, int _min, int _max);
+    void phraseDnComplete();
     //    int calculateNoteDuration();
     
     int threadDownCounter;
