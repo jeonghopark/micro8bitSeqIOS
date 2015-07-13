@@ -10,8 +10,6 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     
-    screenW = 2048;
-    screenH = 2048 * 3.0 / 4.0;
     
     synthSetting();
     maxSpeed = 80;
@@ -26,6 +24,9 @@ void ofApp::setup(){
     ofAddListener(* metroOut, this, &ofApp::triggerReceive);
     
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        screenW = 2048;
+        screenH = 2048 * 3.0 / 4.0;
+
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
 
@@ -37,10 +38,14 @@ void ofApp::setup(){
         downPart.length = screenW * 0.5;
         
     } else {
-        menuStartStopSize = ofGetWidth() / 51.2*4;
-        menuStartRectSpacing = ofGetWidth() / 204.8*4;
         
-        ctrlRectSize = 22 * 2;
+        screenW = 960;
+        screenH = 960 * 3.0 / 4.0;
+
+        menuStartStopSize = screenW * 0.04;
+        menuStartRectSpacing = screenW * 0.02;
+        
+        ctrlRectSize = screenW * 0.052;
 
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
@@ -201,8 +206,8 @@ void ofApp::update(){
     upPart.changeSamplePos = ofVec2f(upPart.lengthPos.x, screenH * 0.5 - screenH * 0.09);
     
     downPart.length = downPart.lengthPos.x - downPart.onOffPos.x;
-    downPart.onOffPos.x = -downPart.length*0.5 + screenW * 0.5;
-    downPart.lengthPos.x = downPart.length*0.5 + screenW * 0.5;
+    downPart.onOffPos.x = -downPart.length * 0.5 + screenW * 0.5;
+    downPart.lengthPos.x = downPart.length * 0.5 + screenW * 0.5;
     
     //    delayupPart = (int)(upPart.position.x)/24;
     
@@ -880,7 +885,6 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     downPart.recordingTime = sampleRecordingTime;
     downPart.timeStamp = ofGetElapsedTimef() - downPart.startTime;
     
-    cout << downPart.timeStamp << endl;
     
     if ((downPart.timeStamp < downPart.recordingTime)){
         if (downPart.recordState==0){
