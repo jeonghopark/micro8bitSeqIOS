@@ -25,7 +25,7 @@ void ofApp::setup(){
     
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         screenW = 2048;
-        screenH = 2048 * 3.0 / 4.0;
+        screenH = screenW * 3.0 / 4.0;
 
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
@@ -40,12 +40,12 @@ void ofApp::setup(){
     } else {
         
         screenW = 960;
-        screenH = 960 * 3.0 / 4.0;
+        screenH = 640;
 
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
         
-        ctrlRectSize = screenW * 0.052;
+        ctrlRectSize = screenW * 0.032;
 
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
@@ -101,8 +101,8 @@ void ofApp::setup(){
     downPart.soundVolume = 1;
     downPart.changeSampleIndex = 0;
     downPart.myWavWriter.setFormat(1, sampleRate, 16);
-    downPart.onOffPos.x = -downPart.length*0.5 + screenW * 0.5;
-    downPart.lengthPos.x = downPart.length*0.5 + screenW * 0.5;
+    downPart.onOffPos.x = -downPart.length * 0.5 + screenW * 0.5;
+    downPart.lengthPos.x = downPart.length * 0.5 + screenW * 0.5;
     downPart.timeStamp = 0;
     
     upPart.length = downPart.length;
