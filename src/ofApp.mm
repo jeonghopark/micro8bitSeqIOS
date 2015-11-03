@@ -10,7 +10,6 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     
-    
     synthSetting();
     maxSpeed = 80;
     minSpeed = 20;
@@ -39,8 +38,8 @@ void ofApp::setup(){
         
     } else {
         
-        screenW = 960;
-        screenH = 640;
+        screenW = ofGetWidth();
+        screenH = ofGetHeight();
 
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
@@ -55,7 +54,7 @@ void ofApp::setup(){
     
     
     ofxAccelerometer.setup();
-    ofxMultiTouch.addListener(this);
+//    ofxMultiTouch.addListener(this);
     
     backgroundColorHue = ofRandom(0, 255);
 //    ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
