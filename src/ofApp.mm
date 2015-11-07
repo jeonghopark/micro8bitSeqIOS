@@ -426,13 +426,13 @@ void ofApp::downPartDraw(){
     if (elementDown[dnIndex].soundTrigger && downPart.bBeingClick) {
         ofFill();
         _alpha = 200 + elementDown[dnIndex].triggerColor;
-        ofSetColor( ofColor::fromHsb(0, 0, 255 + _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
         ofDrawLine(elementDown[dnIndex].onOffPos + ofVec2f(0, _size * 0.5),
                    elementDown[dnIndex].pitchPos + ofVec2f(0, -_size) * 0.5);
     } else {
         ofNoFill();
         _alpha = 0;
-        ofSetColor( ofColor::fromHsb(0, 0, _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
         //        ofDrawLine(elementDown[dnIndex].onOffPos+ofVec2f(0,ctrlRectSize*rectSizeRatio*0.5),
         //        elementDown[dnIndex].pitchPos+ofVec2f(0,-ctrlRectSize*rectSizeRatio*0.5));
     }
@@ -440,7 +440,7 @@ void ofApp::downPartDraw(){
     if (!elementDown[dnIndex].bBeingClick) {
         ofNoFill();
         _alpha = 170 + elementDown[dnIndex].triggerColor;
-        ofSetColor( ofColor::fromHsb(0, 0, _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
     } else {
         //        ofFill();
         //        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
@@ -457,22 +457,22 @@ void ofApp::downPartDraw(){
         
         if (elementDown[i].soundTrigger&&downPart.bBeingClick) {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,150));
+            ofSetColor(0, 150);
             ofDrawLine(elementDown[i].onOffPos+ofVec2f(0, _size*0.5),
                        elementDown[i].pitchPos+ofVec2f(0, -_size)*0.5);
         } else {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,60));
+            ofSetColor(0, 60);
             ofDrawLine(elementDown[i].onOffPos+ofVec2f(0, _size*0.5),
                        elementDown[i].pitchPos+ofVec2f(0, -_size*0.5));
         }
         
         if (!elementDown[i].bBeingClick) {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,120));
+            ofSetColor(0, 120);
         } else {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,30));
+            ofSetColor(0, 30);
         }
         ofDrawRectangle(elementDown[i].onOffPos, _size, _size);
         ofDrawRectangle(elementDown[i].pitchPos, _size, _size);
@@ -519,13 +519,13 @@ void ofApp::upPartDraw() {
     if (elementUp[upIndex].soundTrigger && upPart.bBeingClick) {
         ofFill();
         _alpha = elementUp[upIndex].triggerColor;
-        ofSetColor( ofColor::fromHsb(0, 0, 255 + _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
         ofDrawLine( elementUp[upIndex].onOffPos + ofVec2f(0, -_size * 0.5),
                    elementUp[upIndex].pitchPos + ofVec2f(0, _size * 0.5) );
     } else {
         ofNoFill();
         _alpha = 0;
-        ofSetColor( ofColor::fromHsb(0, 0, _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
         //        ofDrawLine(elementDown[upIndex].onOffPos+ofVec2f(0,ctrlRectSize*rectSizeRatio*0.5),
         //        elementUp[dnIndex].pitchPos+ofVec2f(0,-ctrlRectSize*rectSizeRatio*0.5));
     }
@@ -533,7 +533,7 @@ void ofApp::upPartDraw() {
     if (!elementUp[upIndex].bBeingClick) {
         ofNoFill();
         _alpha = elementUp[upIndex].triggerColor;
-        ofSetColor( ofColor::fromHsb(0, 0, _brightness, _alpha) );
+        ofSetColor( 0, _alpha );
     } else {
         //        ofFill();
         //        ofSetColor(ofColor::fromHsb(0,0,255+elementDown[dnIndex].triggerColor,30+elementDown[dnIndex].triggerColor));
@@ -572,22 +572,22 @@ void ofApp::upPartDraw() {
         
         if (elementUp[i].soundTrigger&&upPart.bBeingClick) {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,150));
+            ofSetColor(0, 150);
             ofDrawLine(elementUp[i].onOffPos+ofVec2f(0, -_size*0.5),
                        elementUp[i].pitchPos+ofVec2f(0, _size*0.5));
         } else {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,60));
+            ofSetColor(0, 60);
             ofDrawLine(elementUp[i].onOffPos+ofVec2f(0, -_size*0.5),
                        elementUp[i].pitchPos+ofVec2f(0, _size*0.5));
         }
         
         if (!elementUp[i].bBeingClick) {
             ofNoFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,120));
+            ofSetColor(0, 120);
         } else {
             ofFill();
-            ofSetColor(ofColor::fromHsb(0,0,255,30));
+            ofSetColor(0, 30);
         }
         
         ofDrawRectangle(elementUp[i].onOffPos, _size, _size);
@@ -607,7 +607,7 @@ void ofApp::debugModeView(int _i, string _pos){
     
     if (debugMode) {
         ofPushStyle();
-        ofSetColor(ofColor::fromHsb(0,0,255,180));
+        ofSetColor(0, 180);
         if (_pos == "down") {
             ofDrawRectangle(elementDown[_i].onOffPos, ctrlRectSize, ctrlRectSize);
             ofDrawRectangle(elementDown[_i].pitchPos, ctrlRectSize, ctrlRectSize);
@@ -631,7 +631,7 @@ void ofApp::touchGuideLine(){
     
     ofPushStyle();
     
-    ofSetColor(ofColor::fromHsb(0,0,255,80));
+    ofSetColor(0, 80);
     
     ofDrawLine(touchPos.x, 0, touchPos.x, screenH);
     ofDrawLine(0, touchPos.y, screenW, touchPos.y);
@@ -647,8 +647,8 @@ void ofApp::drawMainLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofV
     ofSetRectMode(OF_RECTMODE_CENTER);
     
     ofPushStyle();
-    ofColor _cRectOn = ofColor::fromHsb(0, 0, 255, 200);
-    ofColor _cRectOff = ofColor::fromHsb(0, 0, 255, 30);
+    ofColor _cRectOn = ofColor(0, 200);
+    ofColor _cRectOff = ofColor(0, 30);
     
     ofSetColor(_cRectOn);
     
@@ -667,8 +667,8 @@ void ofApp::drawMainLine(bool _bTOnOff, bool _bTSizeOver, bool _bTOnOffOver, ofV
     ofPopStyle();
     
     ofPushStyle();
-    ofColor _cLineOn = ofColor::fromHsb(0, 0, 255, 200);
-    ofColor _cLineOff = ofColor::fromHsb(0, 0, 255, 100);
+    ofColor _cLineOn = ofColor(0, 200);
+    ofColor _cLineOff = ofColor(0, 100);
     
     ofSetColor(_cLineOn);
     
@@ -695,12 +695,12 @@ void ofApp::drawSampleChangeButton(){
     ofPushStyle();
     
     ofNoFill();
-    ofSetColor( ofColor::fromHsb(0, 0, 230, 200) );
+    ofSetColor( 0, 200 );
     
     ofPushStyle();
     
     if (bSampleChange) {
-        ofSetColor( ofColor::fromHsb(0, 0, 230, 70) );
+        ofSetColor( 0, 70 );
         ofFill();
         ofDrawRectangle( sampleChangeButton );
         bSampleChange = false;
@@ -741,12 +741,12 @@ void ofApp::stopStartDraw(){
         indexCounterDn = 0;
         indexCounterUp = 0;
         ofFill();
-        ofSetColor(ofColor::fromHsb(0, 0, 255, 40));
+        ofSetColor(0, 40);
         ofDrawRectangle(mainStartStop);
     }
     
     ofNoFill();
-    ofSetColor(ofColor::fromHsb(0, 0, 255, 220));
+    ofSetColor(0, 220);
     ofDrawRectangle(mainStartStop);
     ofPopStyle();
     ofPopMatrix();
@@ -762,7 +762,7 @@ void ofApp::recordDraw(){
     ofPushStyle();
     
     ofNoFill();
-    ofSetColor(ofColor::fromHsb(0, 0, 255, 220));
+    ofSetColor(0, 220);
     ofDrawRectangle( waveRecordPos, menuStartStopSize, menuStartStopSize );
     
     ofDrawRectangle( screenW - waveRecordPos.x - menuStartStopSize, waveRecordPos.y, menuStartStopSize, menuStartStopSize );
@@ -848,7 +848,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     
     int _lineThick = 3;
     
-    ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 220, 210));
+    ofSetColor(0, 210);
     for (int i=0; i<_indexBuffer; i+=10) {
         //        ofDrawLine( 0, -i-_lineThick, _volumeWidth, -i-_lineThick );
         //        ofDrawLine( 0, i+_lineThick, _volumeWidth, i+_lineThick );
@@ -857,7 +857,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     }
     
     ofNoFill();
-    ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 220, 140));
+    ofSetColor(0, 140);
     for (int i=0; i<(int)_volumeParameter; i+=10) {
         ofDrawRectangle( 0, i+_lineThick, _volumeWidth, _lineThick*2 );
         ofDrawRectangle( 0, -i-_lineThick, _volumeWidth, _lineThick*2 );
@@ -867,7 +867,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
     
     for(int i = 0; i < recBlockSize-1; i++){
         ofPushStyle();
-        ofSetColor(ofColor::fromHsb(backgroundColorHue, 0, 220, 150));
+        ofSetColor(0, 150);
         
         //        ofDrawLine(i, buffer[i] * (recBlockSize-1)/3, i+1, buffer[i+1] * -(recBlockSize-1)/3);
         
