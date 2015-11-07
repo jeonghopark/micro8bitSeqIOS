@@ -6,7 +6,7 @@ void ofApp::setup(){
     ofSetOrientation(OF_ORIENTATION_90_RIGHT);
     
     ofEnableAlphaBlending();
-    ofSetCircleResolution(24);
+    //    ofSetCircleResolution(24);
     
     ofSetFrameRate(60);
     
@@ -25,12 +25,12 @@ void ofApp::setup(){
     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         screenW = 2048;
         screenH = screenW * 3.0 / 4.0;
-
+        
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
-
+        
         ctrlRectSize = screenW * 0.022;
-
+        
         maxLine = screenW * 0.85; // 1740.8
         minLine = screenW * 0.67; // 1372.16
         
@@ -40,12 +40,12 @@ void ofApp::setup(){
         
         screenW = ofGetWidth();
         screenH = ofGetHeight();
-
+        
         menuStartStopSize = screenW * 0.04;
         menuStartRectSpacing = screenW * 0.02;
         
         ctrlRectSize = screenW * 0.032;
-
+        
         maxLine = screenW * 0.85;
         minLine = screenW * 0.67;
         
@@ -54,14 +54,16 @@ void ofApp::setup(){
     
     
     ofxAccelerometer.setup();
-//    ofxMultiTouch.addListener(this);
+    //    ofxMultiTouch.addListener(this);
     
     backgroundColorHue = ofRandom(0, 255);
-//    ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
-//    ofBackground( 118, 192, 194	);
-    ofBackground( 76, 163, 116 );
+    //    ofBackground(ofColor::fromHsb(backgroundColorHue, 150, 180));
+    //    ofBackground( 118, 192, 194	);
+    //    ofBackground( 76, 163, 116 );
+
+    ofBackground( 255 );
     
-    initialBufferSize = 256;
+    initialBufferSize = 512;
     sampleRate = 44100;
     drawCounter = 0;
     buffer = new float[initialBufferSize];
@@ -182,8 +184,8 @@ void ofApp::setup(){
     
     tempoValueSaved = 1536;
     tempoValue = 1536;
-
-    ofSoundStreamSetup(2, 1, this, 44100, 256, 4);
+    
+    ofSoundStreamSetup(2, 1, this, 44100, 512, 4);
     
 }
 
@@ -252,14 +254,14 @@ void ofApp::triggerReceive(float & metro){
     
     threadUpCounter %= 2;
     threadDownCounter %= 2;
-
-
+    
+    
     int _matchInex;
     int _shiftIndex;
     int _min;
     int _max;
     switch (delayupPart) {
-        
+            
         case -2:
             _matchInex = 0;
             _shiftIndex = 1;
@@ -273,14 +275,14 @@ void ofApp::triggerReceive(float & metro){
             _min = 1;
             _max = 7;
             break;
-
+            
         case 0:
             _matchInex = 0;
             _shiftIndex = 0;
             _min = 0;
             _max = 7;
             break;
-
+            
         case 1:
             _matchInex = 1;
             _shiftIndex = 0;
@@ -294,7 +296,7 @@ void ofApp::triggerReceive(float & metro){
             _min = 0;
             _max = 6;
             break;
-
+            
         default:
             break;
     }
@@ -303,11 +305,11 @@ void ofApp::triggerReceive(float & metro){
     if (threadDownCounter % 2 == 0) {
         phraseDnComplete();
     }
-
+    
     if (threadUpCounter % 2 == _matchInex) {
         phraseUpComplete(_shiftIndex, _min, _max);
     }
-
+    
     
     
 }
@@ -316,51 +318,51 @@ void ofApp::triggerReceive(float & metro){
 //--------------------------------------------------------------
 void ofApp::phraseUpComplete(int _index, int _min, int _max){
     
-        if (bMainStartStop) {
-
-            upIndex = (dnIndex + _index) % 8;
-
-            if ((upIndex>=_min)&&(upIndex<=_max)) {
-                if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
-                    elementUp[upIndex].onOffTrigger = true;
-                    elementUp[upIndex].samplePlay.play();
-                    float _volRandom = ofRandom(0.35,1.0);
-                    elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
-                    
-                    float _spdRandom = ofRandom(0.75,1.25);
-                    float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
-                    float _value = _spdValueMap * _spdRandom;
-                    elementUp[upIndex].samplePlay.setSpeed(_value);
-                }
-            } else {
-                elementUp[upIndex].onOffTrigger = false;
+    if (bMainStartStop) {
+        
+        upIndex = (dnIndex + _index) % 8;
+        
+        if ((upIndex>=_min)&&(upIndex<=_max)) {
+            if ((elementUp[upIndex].soundTrigger) && upPart.bBeingClick){
+                elementUp[upIndex].onOffTrigger = true;
+                elementUp[upIndex].samplePlay.play();
+                float _volRandom = ofRandom(0.35,1.0);
+                elementUp[upIndex].samplePlay.setVolume(_volRandom * upPart.soundVolume * sampleMainVolume);
+                
+                float _spdRandom = ofRandom(0.75,1.25);
+                float _spdValueMap = ofMap(ofGetHeight()*0.5+elementUp[upIndex].pitchPos.y, ofGetHeight()*0.5, 0, 2.3, 0.45);
+                float _value = _spdValueMap * _spdRandom;
+                elementUp[upIndex].samplePlay.setSpeed(_value);
             }
-            
+        } else {
+            elementUp[upIndex].onOffTrigger = false;
         }
+        
+    }
     
 }
 
 //--------------------------------------------------------------
 void ofApp::phraseDnComplete(){
     
-        if (bMainStartStop) {
-            indexCounterDn++;
+    if (bMainStartStop) {
+        indexCounterDn++;
+        
+        dnIndex = indexCounterDn % 8;
+        
+        
+        if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
+            elementDown[dnIndex].onOffTrigger = true;
+            elementDown[dnIndex].samplePlay.play();
+            float _volRandom = ofRandom(0.35,1.0);
+            elementDown[dnIndex].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
             
-            dnIndex = indexCounterDn % 8;
-            
-            
-            if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
-                elementDown[dnIndex].onOffTrigger = true;
-                elementDown[dnIndex].samplePlay.play();
-                float _volRandom = ofRandom(0.35,1.0);
-                elementDown[dnIndex].samplePlay.setVolume(_volRandom * downPart.soundVolume * sampleMainVolume);
-                
-                float _spdRandom = ofRandom(0.75,1.25);
-                float _spdValueMap = ofMap(elementDown[dnIndex].pitchPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
-                float _value = _spdValueMap * _spdRandom;
-                elementDown[dnIndex].samplePlay.setSpeed(_value);
-            }
+            float _spdRandom = ofRandom(0.75,1.25);
+            float _spdValueMap = ofMap(elementDown[dnIndex].pitchPos.y, 0, ofGetHeight()*0.5, 2.3, 0.45);
+            float _value = _spdValueMap * _spdRandom;
+            elementDown[dnIndex].samplePlay.setSpeed(_value);
         }
+    }
     
     
 }
@@ -400,7 +402,7 @@ void ofApp::downPartDraw(){
     ofTranslate(0, ofGetHeight()*0.5);
     
     drawMainLine(downPart.bBeingClick, downPart.bLengthOver, downPart.bOnOffOver,
-                     downPart.lengthPos + ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos + ofVec2f(0, ctrlRectSize * 0.5));
+                 downPart.lengthPos + ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos + ofVec2f(0, ctrlRectSize * 0.5));
     
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
@@ -493,7 +495,7 @@ void ofApp::upPartDraw() {
     ofTranslate(0, ofGetHeight()*0.5);
     
     drawMainLine(upPart.bBeingClick, upPart.bLengthOver, upPart.bOnOffOver,
-                     downPart.lengthPos - ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos - ofVec2f(0, ctrlRectSize * 0.5));
+                 downPart.lengthPos - ofVec2f(0, ctrlRectSize * 0.5), downPart.onOffPos - ofVec2f(0, ctrlRectSize * 0.5));
     
     ofPushStyle();
     ofSetRectMode(OF_RECTMODE_CENTER);
@@ -507,7 +509,7 @@ void ofApp::upPartDraw() {
         } else {
             elementUp[upIndex].triggerColor = 0;
         }
-//        elementUp[upIndex].onOffTrigger = false;
+        //        elementUp[upIndex].onOffTrigger = false;
     } else {
         elementUp[upIndex].triggerColor = 0;
     }
@@ -876,7 +878,7 @@ void ofApp::recordingLineDraw(ofVec2f _vP){
         if ((abs(buffer[i+1]*50.0f)>5)){
             downPart.startTime = ofGetElapsedTimef();
         }
-
+        
     }
     
     ofPopMatrix();
@@ -998,7 +1000,7 @@ void ofApp::exit(){
         elementUp[i].samplePlay.unload();
     }
     
-//    std::exit(0);
+    //    std::exit(0);
     
 }
 

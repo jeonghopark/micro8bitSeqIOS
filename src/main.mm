@@ -13,7 +13,7 @@ int main() {
     settings.numOfAntiAliasingSamples = 4; // number of samples used for anti-aliasing.
     settings.enableHardwareOrientation = false; // enables native view orientation.
     settings.enableHardwareOrientationAnimation = false; // enables native orientation changes to be animated.
-    settings.glesVersion = OFXIOS_RENDERER_ES1; // type of renderer to use, ES1, ES2, etc.
+    settings.glesVersion = OFXIOS_RENDERER_ES2; // type of renderer to use, ES1, ES2, etc.
     
     ofCreateWindow(settings);
     
