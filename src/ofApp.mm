@@ -346,10 +346,10 @@ void ofApp::phraseUpComplete(int _index, int _min, int _max){
 void ofApp::phraseDnComplete(){
     
     if (bMainStartStop) {
+        
         indexCounterDn++;
         
         dnIndex = indexCounterDn % 8;
-        
         
         if ((elementDown[dnIndex].soundTrigger) && downPart.bBeingClick){
             elementDown[dnIndex].onOffTrigger = true;
