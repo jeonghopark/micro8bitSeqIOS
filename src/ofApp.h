@@ -71,7 +71,6 @@ controlTempoLine;
 
 class ofApp : public ofxiOSApp{
     
-    ofxTonicSynth synth;
     ofxTonicSynth synthMain;
     
     
