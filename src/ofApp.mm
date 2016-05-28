@@ -53,7 +53,7 @@ void ofApp::setup(){
     }
     
     
-    ofxAccelerometer.setup();
+//    ofxAccelerometer.setup();
     //    ofxMultiTouch.addListener(this);
     
     backgroundColorHue = ofRandom(0, 255);
